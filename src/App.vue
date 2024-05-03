@@ -1,26 +1,30 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <link href="path/to/fontawesome/css/all.min.css" rel="stylesheet">
+    <component :is="selectedComponent" v-if="!showDashboard" @toggle-dashboard="showDashboard = true" />
+    <DashboardLayout v-else />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import DashboardLayout from './components/DashboardLayout.vue';
+import LoginPage from './components/LoginPage.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    DashboardLayout,
+    LoginPage
+  },
+  data() {
+    return {
+      showDashboard: true // Set this to true or false based on your condition
+    };
+  },
+  computed: {
+    selectedComponent() {
+      return this.showDashboard ? 'DashboardLayout' : 'LoginPage';
+    }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

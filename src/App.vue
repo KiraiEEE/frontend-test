@@ -1,8 +1,7 @@
 <template>
   <div id="app">
-    <link href="path/to/fontawesome/css/all.min.css" rel="stylesheet">
-    <component :is="selectedComponent" v-if="!showDashboard" @toggle-dashboard="showDashboard = true" />
-    <DashboardLayout v-else />
+    <DashboardLayout v-if="isLoggedIn" />
+    <LoginPage v-else @auth-success="handleLogin" />
   </div>
 </template>
 
@@ -18,13 +17,21 @@ export default {
   },
   data() {
     return {
-      showDashboard: true // Set this to true or false based on your condition
+      isLoggedIn: false
     };
   },
-  computed: {
-    selectedComponent() {
-      return this.showDashboard ? 'DashboardLayout' : 'LoginPage';
+  methods: {
+    handleLogin(event) {
+      this.isLoggedIn = true;
+      localStorage.setItem('userId', event.userId);
+    },
+    checkLoginStatus() {
+      const user = localStorage.getItem('userId');
+      this.isLoggedIn = !!user;
     }
+  },
+  created() {
+    this.checkLoginStatus();
   }
 }
 </script>

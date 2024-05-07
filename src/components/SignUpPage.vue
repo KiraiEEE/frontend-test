@@ -1,59 +1,118 @@
 <template>
-    <div class="flex justify-center items-center h-screen bg-gray-100">
-        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h2 class="text-2xl font-bold mb-6">Sign Up</h2>
-            <form>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                        Username
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="username"
-                        type="text"
-                        placeholder="Enter your username"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-                        Email
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                        Password
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="password"
-                        type="password"
-                        placeholder="Enter your password"
-                    />
-                </div>
-                <div class="flex items-center justify-between">
-                    <button
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="button"
-                    >
-                        Sign Up
-                    </button>
-                    <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
-                        Already have an account? Sign in
-                    </a>
-                </div>
-            </form>
+  <div class="flex justify-center items-center h-screen bg-gray-100">
+    <div class="w-full max-w-lg p-8 shadow-lg rounded-lg">
+      <h1 class="text-2xl font-semibold mb-6 text-center">Sign Up</h1>
+      <form @submit.prevent="handleSignUp" class="space-y-4">
+        <!-- Name, Username, CIN in one row -->
+        <div class="flex justify-between gap-3">
+          <div class="w-1/3">
+            <label for="name" class="block text-gray-600">Name</label>
+            <input type="text" id="name" v-model="name" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+          </div>
+          <div class="w-1/3">
+            <label for="username" class="block text-gray-600">Username</label>
+            <input type="text" id="username" v-model="username" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+          </div>
+          <div class="w-1/3">
+            <label for="cin" class="block text-gray-600">CIN Number</label>
+            <input type="text" id="cin" v-model="cin" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+          </div>
         </div>
+        <!-- Role and Email Selection -->
+        <div class="flex justify-between gap-3">
+          <div class="w-1/2">
+            <label for="role" class="block text-gray-600">Role</label>
+            <select id="role" v-model="role" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+              <option value="superadmin">Super Admin</option>
+            </select>
+          </div>
+          <div class="w-1/2">
+            <label for="email" class="block text-gray-600">Email</label>
+            <input type="email" id="email" v-model="email" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+          </div>
+        </div>
+        <!-- Password and Confirm Password next to each other -->
+        <div class="flex justify-between gap-3">
+          <div class="w-1/2">
+            <label for="password" class="block text-gray-600">Password</label>
+            <input type="password" id="password" v-model="password" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+          </div>
+          <div class="w-1/2">
+            <label for="confirmPassword" class="block text-gray-600">Confirm Password</label>
+            <input type="password" id="confirmPassword" v-model="confirmPassword" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+          </div>
+        </div>
+        <!-- Branch ID Selection -->
+        <div class="mb-6">
+          <label for="branchID" class="block text-gray-600">Branch</label>
+          <select id="branchID" v-model="branchID" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
+            <option v-for="branch in branches" :value="branch.id" :key="branch.id">{{ branch.branchName }}</option>
+          </select>
+        </div>
+        <!-- Sign Up Button -->
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full">Sign Up</button>
+      </form>
     </div>
+  </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-    name: 'SignUpPage',
-};
+  name: 'SignUpPage',
+  data() {
+    return {
+      name: '',
+      username: '',
+      cin: '',
+      role: 'user',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      branchID: '1',
+      branches: []
+    };
+  },
+  methods: {
+    async handleSignUp() {
+      if (this.password !== this.confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+      try {
+        const response = await axios.post('http://localhost:3000/users/signup', {
+          name: this.name,
+          username: this.username,
+          CIN: this.cin,
+          role: this.role,
+          email: this.email,
+          password: this.password,
+          branchID: this.branchID
+        });
+        if (response.status === 201) {
+          alert("Signup successful!");
+          this.$router.push('/login');
+        } else {
+          alert(response.data.message);
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+      }
+    },
+    async fetchBranches() {
+      try {
+        const response = await axios.get('http://localhost:3000/branches');
+        this.branches = response.data;
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    }
+  },
+  created() {
+    this.fetchBranches();
+  }
+}
 </script>

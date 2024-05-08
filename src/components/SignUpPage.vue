@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-center items-center h-screen bg-gray-100">
-    <div class="w-full max-w-lg p-8 shadow-lg rounded-lg">
+  <div class="flex justify-center items-center h-screen bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200">
+    <div class="w-full max-w-lg p-8 shadow-lg rounded-lg bg-white">
         <div class="flex justify-center items-center mb-6">
           <h2 class="text-xl font-semibold text-gray-700 mr-4">SignUp</h2>
         </div>

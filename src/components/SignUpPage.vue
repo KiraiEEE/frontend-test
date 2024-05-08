@@ -1,58 +1,63 @@
 <template>
-  <div class="flex justify-center items-center h-screen bg-gray-100">
-    <div class="w-full max-w-lg p-8 shadow-lg rounded-lg">
-      <h1 class="text-2xl font-semibold mb-6 text-center">Sign Up</h1>
-      <form @submit.prevent="handleSignUp" class="space-y-4">
+  <div class="flex justify-center items-center h-screen bg-gray-200">
+    <div class="w-full max-w-lg p-10 shadow-xl rounded-xl bg-white">
+        <div class="flex justify-center items-center mb-8">
+          <h2 class="text-2xl font-bold text-gray-800">Sign Up</h2>
+        </div>
+
+      <form @submit.prevent="handleSignUp" class="space-y-6">
         <!-- Name, Username, CIN in one row -->
-        <div class="flex justify-between gap-3">
+        <div class="flex justify-between gap-4">
           <div class="w-1/3">
-            <label for="name" class="block text-gray-600">Name</label>
-            <input type="text" id="name" v-model="name" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+            <label for="name" class="block text-gray-700 font-medium">Name</label>
+            <input type="text" id="name" v-model="name" class="w-full border border-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:border-indigo-600" required>
           </div>
           <div class="w-1/3">
-            <label for="username" class="block text-gray-600">Username</label>
-            <input type="text" id="username" v-model="username" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+            <label for="username" class="block text-gray-700 font-medium">Username</label>
+            <input type="text" id="username" v-model="username" class="w-full border border-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:border-indigo-600" required>
           </div>
           <div class="w-1/3">
-            <label for="cin" class="block text-gray-600">CIN Number</label>
-            <input type="text" id="cin" v-model="cin" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+            <label for="cin" class="block text-gray-700 font-medium">CIN Number</label>
+            <input type="text" id="cin" v-model="cin" class="w-full border border-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:border-indigo-600" required>
           </div>
         </div>
         <!-- Role and Email Selection -->
-        <div class="flex justify-between gap-3">
+        <div class="flex justify-between gap-4">
           <div class="w-1/2">
-            <label for="role" class="block text-gray-600">Role</label>
-            <select id="role" v-model="role" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
+            <label for="role" class="block text-gray-700 font-medium">Role</label>
+            <select id="role" v-model="role" class="w-full border border-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:border-indigo-600">
               <option value="user">User</option>
               <option value="admin">Admin</option>
               <option value="superadmin">Super Admin</option>
             </select>
           </div>
           <div class="w-1/2">
-            <label for="email" class="block text-gray-600">Email</label>
-            <input type="email" id="email" v-model="email" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+            <label for="email" class="block text-gray-700 font-medium">Email</label>
+            <input type="email" id="email" v-model="email" class="w-full border border-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:border-indigo-600" required>
           </div>
         </div>
         <!-- Password and Confirm Password next to each other -->
-        <div class="flex justify-between gap-3">
+        <div class="flex justify-between gap-4">
           <div class="w-1/2">
-            <label for="password" class="block text-gray-600">Password</label>
-            <input type="password" id="password" v-model="password" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+            <label for="password" class="block text-gray-700 font-medium">Password</label>
+            <input type="password" id="password" v-model="password" class="w-full border border-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:border-indigo-600" required>
           </div>
           <div class="w-1/2">
-            <label for="confirmPassword" class="block text-gray-600">Confirm Password</label>
-            <input type="password" id="confirmPassword" v-model="confirmPassword" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
+            <label for="confirmPassword" class="block text-gray-700 font-medium">Confirm Password</label>
+            <input type="password" id="confirmPassword" v-model="confirmPassword" class="w-full border border-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:border-indigo-600" required>
           </div>
         </div>
         <!-- Branch ID Selection -->
-        <div class="mb-6">
-          <label for="branchID" class="block text-gray-600">Branch</label>
-          <select id="branchID" v-model="branchID" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
+        <div class="mb-8">
+          <label for="branchID" class="block text-gray-700 font-medium">Branch</label>
+          <select id="branchID" v-model="branchID" class="w-full border border-gray-400 rounded-lg py-2 px-4 focus:outline-none focus:border-indigo-600">
             <option v-for="branch in branches" :value="branch.branchID" :key="branch.id">{{ branch.branchName }}</option>
           </select>
         </div>
         <!-- Sign Up Button -->
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full">Sign Up</button>
+        <button type="submit" class="w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors duration-300">
+          Sign Up
+        </button>
       </form>
       <Notification v-if="showNotification" :message="notificationMessage" :show="showNotification" @hide="showNotification = false" />
     </div>

@@ -5,54 +5,11 @@
 
     <div class="flex flex-row justify-center space-x-4">
         <div class="flex flex-row justify-center space-x-4">
-  <!-- Red card -->
-  <div class="bg-red-500 p-4 rounded-lg text-white">
-    <p class="text-lg font-bold">LTN-4 1</p>
-  </div>
-
-  <!-- Yellow card -->
-  <div class="bg-yellow-500 p-4 rounded-lg text-white">
-    <p class="text-lg font-bold">LTN-4 2</p>
-  </div>
-
-  <!-- Green card -->
-  <div class="bg-green-500 p-4 rounded-lg text-white">
-    <p class="text-lg font-bold">LTN-5 1</p>
-  </div>
-
-  <!-- Red card -->
-  <div class="bg-red-500 p-4 rounded-lg text-white">
-    <p class="text-lg font-bold">LTN-5 2</p>
-  </div>
-
-  <!-- Yellow card -->
-  <div class="bg-yellow-500 p-4 rounded-lg text-white">
-    <p class="text-lg font-bold">LTN-3 1</p>
-  </div>
-
-  <!-- Green card -->
-  <div class="bg-green-500 p-4 rounded-lg text-white">
-    <p class="text-lg font-bold">LTN-3 2</p>
-  </div>
-
-    <!-- Green card -->
-  <div class="bg-green-500 p-4 rounded-lg text-white">
-    <p class="text-lg font-bold">LTN-2 1</p>
-  </div>
-
-    <!-- Green card -->
-  <div class="bg-green-500 p-4 rounded-lg text-white">
-    <p class="text-lg font-bold">LTN-2 2</p>
-  </div>
-</div>
-
-  <!-- Yellow card -->
-  <div class="bg-yellow-500 p-4 rounded-lg text-white">
-    <p class="text-lg font-bold">LTN-2 1</p>
-  </div>
-
-  
-
+          <!-- Dynamic colored cards based on room status -->
+          <div v-for="room in rooms" :key="room.id" :class="{'bg-red-500': room.status === 0, 'bg-green-500': room.status === 1, 'bg-yellow-500': room.status === 2, 'p-4': true, 'rounded-lg': true, 'text-white': true}">
+            <p class="text-lg font-bold">{{ room.name }}</p>
+          </div>
+        </div>
     </div>
 
 <div className="h-screen bg-white-100 p-6">
@@ -138,5 +95,26 @@
 </template>
 
 <script>
-export default {}
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      rooms: []
+    };
+  },
+  created() {
+    this.fetchRooms();
+  },
+  methods: {
+    async fetchRooms() {
+      try {
+        const response = await axios.get('http://localhost:3000/rooms');
+        this.rooms = response.data;
+      } catch (error) {
+        console.error('Error fetching rooms:', error);
+      }
+    }
+  }
+}
 </script>

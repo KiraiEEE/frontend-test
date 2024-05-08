@@ -4,7 +4,7 @@
   <div>
    <div class="max-w-2xl mx-auto bg-white-100 p-16">
 
-    <form>
+    <form @submit.prevent="handleUpdate">
         <div class="grid gap-6 mb-6 lg:grid-cols-2">
             <div>
                 <!-- Profile Picture container -->
@@ -32,30 +32,30 @@
             </div>
             <div>
                 <label for="full_name" class="block mb-2 text-sm font-medium text-gray-800">Full name</label>
-                <input type="text" id="full_name" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="John Doe" required>
+                <input type="text" id="full_name" v-model="fullName" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="John Doe" required>
             </div>
 
             <div>
                 <label for="department" class="block mb-2 text-sm font-medium text-gray-800">Department</label>
-                <input type="text" id="department" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="LTN-*" required>
+                <input type="text" id="department" v-model="department" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="LTN-*" required>
             </div>
 
             <div>
                 <label for="cin" class="block mb-2 text-sm font-medium text-gray-800">CIN (Identification Number)</label>
-                <input type="text" id="cin" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="123456789" required>
+                <input type="text" id="cin" v-model="cin" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="123456789" required>
             </div>
             <div>
                 <label for="code" class="block mb-2 text-sm font-medium text-gray-800">Code</label>
-                <input type="text" id="code" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="ABC123" required>
+                <input type="text" id="code" v-model="code" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="ABC123" required>
             </div>
 
             <div>
                 <label for="password" class="block mb-2 text-sm font-medium text-gray-800">Password</label>
-                <input type="password" id="password" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="password" id="password" v-model="password" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
             <div>
                 <label for="retype_password" class="block mb-2 text-sm font-medium text-gray-800">Retype Password</label>
-                <input type="password" id="retype_password" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                <input type="password" id="retype_password" v-model="retypePassword" class="bg-white border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
             </div>
         </div>
         <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Save Changes</button>
@@ -68,5 +68,44 @@
 </template>
 
 <script>
-export default {}
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      fullName: '',
+      department: '',
+      cin: '',
+      code: '',
+      password: '',
+      retypePassword: ''
+    };
+  },
+  methods: {
+    async handleUpdate() {
+      if (this.password !== this.retypePassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+      try {
+        const userId = localStorage.getItem('userId');
+        const response = await axios.put(`http://localhost:3000/users/${userId}`, {
+          fullName: this.fullName,
+          department: this.department,
+          cin: this.cin,
+          code: this.code,
+          password: this.password
+        });
+        if (response.status === 200) {
+          alert("Update successful!");
+        } else {
+          alert(response.data.message);
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+        alert('Network error: ' + error.message);
+      }
+    }
+  }
+}
 </script>

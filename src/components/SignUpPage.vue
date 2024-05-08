@@ -48,21 +48,27 @@
         <div class="mb-6">
           <label for="branchID" class="block text-gray-600">Branch</label>
           <select id="branchID" v-model="branchID" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
-            <option v-for="branch in branches" :value="branch.id" :key="branch.id">{{ branch.branchName }}</option>
+            <option v-for="branch in branches" :value="branch.branchID" :key="branch.id">{{ branch.branchName }}</option>
           </select>
         </div>
         <!-- Sign Up Button -->
         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full">Sign Up</button>
       </form>
+      <Notification v-if="showNotification" :message="notificationMessage" :show="showNotification" @hide="showNotification = false" />
     </div>
   </div>
 </template>
 
+
 <script>
 import axios from 'axios';
+import Notification from './NotifMsgBox.vue'; 
 
 export default {
   name: 'SignUpPage',
+  components: {
+    Notification
+  },
   data() {
     return {
       name: '',
@@ -72,14 +78,17 @@ export default {
       email: '',
       password: '',
       confirmPassword: '',
-      branchID: '1',
-      branches: []
+      branchID: '',
+      branches: [],
+      showNotification: false,
+      notificationMessage: ''
     };
   },
   methods: {
     async handleSignUp() {
       if (this.password !== this.confirmPassword) {
-        alert("Passwords do not match!");
+        this.notificationMessage = "Passwords do not match!";
+        this.showNotification = true;
         return;
       }
       try {
@@ -90,16 +99,20 @@ export default {
           role: this.role,
           email: this.email,
           password: this.password,
-          branchID: this.branchID
+          branchID: this.branchID  // Ensuring the selected branchID is sent
         });
         if (response.status === 201) {
-          alert("Signup successful!");
+          this.notificationMessage = "Signup successful!";
+          this.showNotification = true;
           this.$router.push('/login');
         } else {
-          alert(response.data.message);
+          this.notificationMessage = response.data.message;
+          this.showNotification = true;
         }
       } catch (error) {
         console.error('Network error:', error);
+        this.notificationMessage = 'Network error: ' + error.message;
+        this.showNotification = true;
       }
     },
     async fetchBranches() {

@@ -1,6 +1,13 @@
 <template>
   <div id="app">
     <SignupPage />
+    <div class="p-4 bg-yellow-500" >
+
+      <p>TEST MODE</p>
+    <p>user logged in: {{ isLoggedIn }}</p>
+
+    </div>
+
     <DashboardLayout v-if="isLoggedIn" />
     <LoginPage v-else @auth-success="handleLogin" />
     

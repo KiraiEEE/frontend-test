@@ -89,6 +89,9 @@ export default {
       if (this.password !== this.confirmPassword) {
         this.notificationMessage = "Passwords do not match!";
         this.showNotification = true;
+        setTimeout(() => {
+          this.showNotification = false;
+        }, 1000);
         return;
       }
       try {
@@ -104,15 +107,24 @@ export default {
         if (response.status === 201) {
           this.notificationMessage = "Signup successful!";
           this.showNotification = true;
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 1000);
           this.$router.push('/login');
         } else {
           this.notificationMessage = response.data.message;
           this.showNotification = true;
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 1000);
         }
       } catch (error) {
         console.error('Network error:', error);
         this.notificationMessage = 'Network error: ' + error.message;
         this.showNotification = true;
+        setTimeout(() => {
+          this.showNotification = false;
+        }, 1000);
       }
     },
     async fetchBranches() {

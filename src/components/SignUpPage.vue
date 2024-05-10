@@ -2,7 +2,7 @@
   <div class="flex justify-center items-center h-screen bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200">
     <div class="w-full max-w-lg p-8 shadow-lg rounded-lg bg-white">
         <div class="flex justify-center items-center mb-6">
-          <h2 class="text-xl font-semibold text-gray-700 mr-4">SignUp</h2>
+          <h2 class="text-xl font-semibold text-gray-700 mr-4">Create an account</h2>
         </div>
 
       <form @submit.prevent="handleSignUp" class="space-y-4">
@@ -55,7 +55,8 @@
           </select>
         </div>
         <!-- Sign Up Button -->
-        <button type="submit" class="relative inline-flex items-center justify-start py-3 pl-4 pr-12 overflow-hidden font-semibold text-indigo-600 transition-all duration-150 ease-in-out rounded hover:pl-10 hover:pr-6 bg-gray-50 group">
+        <div class="flex justify-center items-center">
+          <button type="submit" class=" relative inline-flex items-center justify-start py-3 pl-4 pr-12 overflow-hidden font-semibold text-indigo-600 transition-all duration-150 ease-in-out rounded hover:pl-10 hover:pr-6 bg-gray-50 group">
           <span class="absolute bottom-0 left-0 w-full h-1 transition-all duration-150 ease-in-out bg-indigo-600 group-hover:h-full"></span>
           <span class="absolute right-0 pr-4 duration-200 ease-out group-hover:translate-x-12">
             <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -65,7 +66,12 @@
           </span>
           <span class="relative w-full text-left transition-colors duration-200 ease-in-out group-hover:text-white">Sign Up</span>
         </button>
-        
+        </div>
+
+        <!-- Link to Login Page -->
+        <p class="text-center mt-4">
+          Already have an account? <a class="text-blue-500 hover:text-blue-700 cursor-pointer" @click="handleGoToLogin">Log in</a>
+        </p>
       </form>
       <Notification v-if="showNotification" :message="notificationMessage" :show="showNotification" @hide="showNotification = false" />
     </div>
@@ -149,6 +155,9 @@ export default {
       } catch (error) {
         console.error('Error fetching branches:', error);
       }
+    },
+    handleGoToLogin() {
+      window.location.reload();
     }
   },
   created() {

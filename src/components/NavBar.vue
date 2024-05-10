@@ -33,10 +33,10 @@
     <div class="flex items-center">
       <div class="relative group mr-4"> 
         <button class="text-gray-600 text-lg focus:outline-none">
-           <img class="flex-shrink-0 object-cover mx-1 rounded-full w-9 h-9" src="https://images.unsplash.com/photo-1523779917675-b6ed3a42a561?ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8d29tYW4lMjBibHVlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=face&w=500&q=200" alt="jane avatar">
+           <img class="flex-shrink-0 object-cover mx-1 rounded-full w-9 h-9" src="https://images.unsplash.com/photo-1523779917675-b6ed3a42a561?ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8d29tYW4lMjBibHVlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=face&w=500&q=200" alt="User Avatar">
         </button>
         <div
-          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 invisible group-hover:visible"
+          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
         >
           <router-link
             to="/settings"
@@ -44,12 +44,12 @@
           >
             Settings
           </router-link>
-          <button class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200">
-            Logout
-          </button>
           <router-link to="/about" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
             About
           </router-link>
+          <button @click="logout" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200">
+            Logout
+          </button>
         </div>
       </div>
 
@@ -58,7 +58,7 @@
           <i class="fas fa-bell"></i>
         </button>
         <div
-          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 invisible group-hover:visible group-focus:visible"
+          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 invisible group-hover:visible group-focus:visible transition-opacity duration-300 ease-in-out"
         >
           <p class="px-4 py-2 text-gray-800">You have 2 new notifications</p>
           <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
@@ -77,6 +77,11 @@
 <script>
 export default {
   name: "NavBar",
-  
+  methods: {
+    logout() {
+      localStorage.removeItem('userId');
+      window.location.reload();
+    }
+  }
 };
 </script>

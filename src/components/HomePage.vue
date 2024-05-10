@@ -6,8 +6,8 @@
     <div class="flex flex-row justify-center space-x-4">
         <div class="flex flex-row justify-center space-x-4">
           <!-- Dynamic colored cards based on room status -->
-          <div v-for="room in rooms" :key="room.id" :class="{'bg-red-500': room.status === 0, 'bg-green-500': room.status === 1, 'bg-yellow-500': room.status === 2, 'p-4': true, 'rounded-lg': true, 'text-white': true}">
-            <p class="text-lg font-bold">{{ room.name }}</p>
+          <div v-for="room in rooms" :key="room.id" :class="{'bg-red-500': room.status === 0, 'bg-green-500': room.status === 1, 'bg-yellow-500': room.status === 2, 'p-1': true, 'rounded-lg': true, 'text-white': true}">
+            <p>{{ room.roomName }}</p>
           </div>
         </div>
     </div>

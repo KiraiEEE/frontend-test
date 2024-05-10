@@ -1,16 +1,8 @@
 <template>
   <div id="app">
-    <SignupPage />
-    <div class="p-4 bg-yellow-500" >
-
-      <p>TEST MODE</p>
-    <p>user logged in: {{ isLoggedIn }}</p>
-
-    </div>
-
     <DashboardLayout v-if="isLoggedIn" />
-    <LoginPage v-else @auth-success="handleLogin" />
-    
+    <LoginPage v-else-if="!isLoggedIn && !showSignupPage" @auth-success="handleLogin" @signup-click="handleSignupClick" />
+    <SignupPage v-else @signup-success="handleSignupSuccess" @go-to-login="handleGoToLogin" />
   </div>
 </template>
 
@@ -28,13 +20,25 @@ export default {
   },
   data() {
     return {
-      isLoggedIn: false
+      isLoggedIn: false,
+      showSignupPage: false
     };
   },
   methods: {
     handleLogin(event) {
       this.isLoggedIn = true;
       localStorage.setItem('userId', event.userId);
+    },
+    handleSignupClick() {
+      this.showSignupPage = true;
+    },
+    handleSignupSuccess(event) {
+      this.isLoggedIn = true;
+      localStorage.setItem('userId', event.userId);
+      this.showSignupPage = false;
+    },
+    handleGoToLogin() {
+      this.showSignupPage = false;
     },
     checkLoginStatus() {
       const user = localStorage.getItem('userId');

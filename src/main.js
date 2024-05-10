@@ -21,14 +21,14 @@ import EquipmentManagement from './components/EquipmentManagement.vue'
 import DocumentationManagement from './components/DocumentationManagement.vue'
 import SettingsPage from './components/SettingsPage.vue'
 import ChecklistCustomizer from './components/ChecklistCustomizer.vue';
-import LoginPage from './components/LoginPage.vue';
+//import LoginPage from './components/LoginPage.vue';
 // import SignUpPage from './components/SignUpPage.vue';
 
 // Create a router instance
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/login', component: LoginPage },
+    //{ path: '/login', component: LoginPage, meta: { fullPage: true } },
     { path: '/', component: HomePage },
     { path: '/users', component: UsersManagement },
     { path: '/checklist', component: ChecklistManagement },

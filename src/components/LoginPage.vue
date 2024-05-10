@@ -11,12 +11,12 @@
     <!-- Username Input -->
     <div class="mb-4">
       <label for="username" class="block text-gray-600">Username</label>
-      <input type="text" id="username" v-model="username" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" autocomplete="off">
+      <input type="text" id="username" v-model="username" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" autocomplete="username">
     </div>
     <!-- Password Input -->
     <div class="mb-4">
       <label for="password" class="block text-gray-600">Password</label>
-      <input type="password" id="password" v-model="password" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" autocomplete="off">
+      <input type="password" id="password" v-model="password" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" autocomplete="current-password">
     </div>
     <!-- Forgot Password Link -->
     <div class="mb-6 text-blue-500">
@@ -28,7 +28,7 @@
    
   <!-- Sign up  Link -->
   <div class="mt-6 text-blue-500 text-center">
-    <a href="#" class="hover:underline">Sign up</a>
+    <a href="#" @click="handleSignupClick" class="hover:underline">Sign up</a>
   </div>
 </div>
 </div>
@@ -58,13 +58,18 @@ export default {
       });
       const data = await response.json();
       if (response.ok) {
+        localStorage.setItem('username', this.username);
+        localStorage.setItem('password', this.password);
         this.$emit('auth-success', { userId: data.userId });
       } else {
-        console.error(data.message); // Handle errors based on your requirements
+        console.error(data.message); 
       }
     } catch (error) {
       console.error('Network error:', error);
     }
+  },
+  handleSignupClick() {
+    this.$emit('signup-click');
   }
 }
 }

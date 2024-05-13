@@ -1,12 +1,17 @@
 <template>
   <div class="flex justify-center items-center h-screen bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200">
     <div class="w-full max-w-lg p-8 shadow-lg rounded-lg bg-white">
-        <div class="flex justify-center items-center mb-6">
-          <h2 class="text-xl font-semibold text-gray-700 mr-4">Create an account</h2>
-        </div>
+
 
       <form @submit.prevent="handleSignUp" class="space-y-4">
-        <!-- Name, Username, CIN in one row -->
+        <div class="mb-10 md:mb-10 text-center">
+                  <div
+                     
+                     class="inline-block max-w-[160px] mx-auto"
+                     >
+                  <img src="@/assets/logo.png" alt="logo" />
+        </div>
+               </div>
         <div class="flex justify-between gap-3">
           <div class="w-1/3">
             <label for="name" class="block text-gray-600">Name</label>

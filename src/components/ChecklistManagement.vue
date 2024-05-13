@@ -1,17 +1,53 @@
 <template>
-  <div class="checklist-customizer">
-    <form @submit.prevent="submitChecklist">
-      <input v-model="checklist.checklistType" placeholder="Enter checklist type" class="input-field"/>
-      <button type="submit" class="submit-btn">Save Checklist</button>
+  <div class="checklist-customizer bg-gray-800 p-6 rounded-lg shadow-lg">
+    <form @submit.prevent="submitChecklist" class="mb-8">
+      <div class="mb-4">
+        <label for="checklistType" class="block text-gray-200 font-bold mb-2">
+          Add New Checklist (you have to configure it manually)
+        </label>
+        <input
+          v-model="checklist.checklistType"
+          id="checklistType"
+          placeholder="Enter checklist type/name"
+          class="input-field form-input block w-full px-4 py-3 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+      </div>
+      <button
+        type="submit"
+        class="submit-btn bg-purple-600 text-white font-bold py-3 px-6 rounded-md hover:bg-purple-700 transition-colors duration-300"
+      >
+        Add Checklist
+      </button>
     </form>
-    <div v-if="checklists.length > 0">
-      <ul>
-        <li v-for="item in checklists" :key="item.id">
-          {{ item.checklistType }}
-          <button @click="editChecklist(item)">Edit</button>
-          <button @click="deleteChecklist(item.id)">Delete</button>
-        </li>
-      </ul>
+
+    <div v-if="checklists.length > 0" class="checklist-container">
+      <table class="min-w-full text-gray-200">
+        <thead>
+          <tr class="bg-gray-700">
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Type</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in checklists" :key="item.checklistID" class="bg-gray-600 border-b border-gray-700">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ item.checklistType }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <button
+                @click="editChecklist(item)"
+                class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition-colors duration-300"
+              >
+                Edit
+              </button>
+              <button
+                @click="deleteChecklist(item.checklistID)"
+                class="delete-btn ml-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition-colors duration-300"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -59,8 +95,8 @@ export default {
     },
     async updateChecklist() {
       try {
-        await axios.put(`http://localhost:3000/checklists/${this.checklist.id}`, this.checklist);
-        const index = this.checklists.findIndex(item => item.id === this.checklist.id);
+        await axios.put(`http://localhost:3000/checklists/${this.checklist.checklistID}`, this.checklist);
+        const index = this.checklists.findIndex(item => item.checklistID === this.checklist.checklistID);
         this.checklists[index] = {...this.checklist};
         this.resetChecklist();
       } catch (error) {
@@ -71,10 +107,10 @@ export default {
       this.checklist = {...item};
       this.isEditing = true;
     },
-    async deleteChecklist(id) {
+    async deleteChecklist(checklistID) {
       try {
-        await axios.delete(`http://localhost:3000/checklists/${id}`);
-        this.checklists = this.checklists.filter(item => item.id !== id);
+        await axios.delete(`http://localhost:3000/checklists/${checklistID}`);
+        this.checklists = this.checklists.filter(item => item.checklistID !== checklistID);
       } catch (error) {
         console.error('Error deleting checklist:', error);
       }

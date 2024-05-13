@@ -30,7 +30,7 @@
           <div class="w-full px-3">
             <div class="mb-5">
               <label for="password" class="mb-3 block text-base font-medium text-[#07074D]">
-                Password
+                New Password
               </label>
               <input v-model="user.password" type="password" id="password" placeholder="Enter new password" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
             </div>
@@ -69,7 +69,7 @@ export default {
       const userId = localStorage.getItem('userId');
       try {
         const response = await axios.get(`http://localhost:3000/users/${userId}`);
-        this.user = response.data;
+        this.user = {...response.data, password: ''}; // Clear password after fetching
       } catch (error) {
         console.error('Failed to fetch user data:', error);
       }

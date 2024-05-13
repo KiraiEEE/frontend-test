@@ -23,6 +23,7 @@ import SettingsPage from './components/SettingsPage.vue'
 import ChecklistCustomizer from './components/ChecklistCustomizer.vue';
 //import LoginPage from './components/LoginPage.vue';
 // import SignUpPage from './components/SignUpPage.vue';
+import AboutApp from './components/AboutApp.vue';
 
 // Create a router instance
 const router = createRouter({
@@ -37,6 +38,7 @@ const router = createRouter({
     { path: '/settings', component: SettingsPage },
     { path: '/customize', component: ChecklistCustomizer },
     // { path: '/signup', component: SignUpPage}
+    { path: '/about', component: AboutApp}
   ]
 })
 

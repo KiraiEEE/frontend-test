@@ -58,8 +58,7 @@ export default {
       });
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('username', this.username);
-        localStorage.setItem('password', this.password);
+        localStorage.setItem('userId', data.userId); // Only save userId in localStorage
         this.$emit('auth-success', { userId: data.userId });
       } else {
         console.error(data.message); 

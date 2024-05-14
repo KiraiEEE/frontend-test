@@ -8,8 +8,11 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
-  <nav class="navbar flex justify-between items-center h-20 px-8">
+  <nav class="navbar flex justify-between items-center h-20 px-8 border border-gray-300">
     <div class="flex items-center">
+      <button @click="toggleSidebar" class="mr-4">
+        <i class="fas fa-bars text-gray-600 text-lg"></i>
+      </button>
       <router-link to="/">
         <img
           src="@/assets/mainlogolow.svg"
@@ -70,10 +73,6 @@
   </nav>
 </template>
 
-
-
-
-
 <script>
 export default {
   name: "NavBar",
@@ -81,6 +80,9 @@ export default {
     logout() {
       localStorage.removeItem('userId');
       window.location.reload();
+    },
+    toggleSidebar() {
+      this.$emit('toggle-sidebar');
     }
   }
 };

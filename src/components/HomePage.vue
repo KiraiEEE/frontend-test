@@ -19,6 +19,7 @@
            'bg-red-500': room.status === 0,
            'bg-green-500': room.status === 1,
            'bg-yellow-500': room.status === 2,
+           'bg-black': room.status === null,
            'p-2': true,
            'rounded-xl': true,
            'text-white': true,

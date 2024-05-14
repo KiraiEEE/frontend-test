@@ -1,4 +1,5 @@
 <template>
+  
   <div id="app">
     <DashboardLayout v-if="isLoggedIn" />
     <LoginPage v-else-if="!isLoggedIn && !showSignupPage" @auth-success="handleLogin" @signup-click="handleSignupClick" />

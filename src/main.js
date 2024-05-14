@@ -21,9 +21,9 @@ import EquipmentManagement from './components/EquipmentManagement.vue'
 import DocumentationManagement from './components/DocumentationManagement.vue'
 import SettingsPage from './components/SettingsPage.vue'
 import ChecklistCustomizer from './components/ChecklistCustomizer.vue';
-//import LoginPage from './components/LoginPage.vue';
-// import SignUpPage from './components/SignUpPage.vue';
 import AboutApp from './components/AboutApp.vue';
+import BranchManagement from './components/BranchManagement.vue';
+import RoomManagement from './components/RoomManagement.vue';
 
 // Create a router instance
 const router = createRouter({
@@ -37,8 +37,10 @@ const router = createRouter({
     { path: '/documentation', component: DocumentationManagement },
     { path: '/settings', component: SettingsPage },
     { path: '/customize', component: ChecklistCustomizer },
-    // { path: '/signup', component: SignUpPage}
-    { path: '/about', component: AboutApp}
+    { path: '/about', component: AboutApp},
+    { path: '/branch', component: BranchManagement }, // Route for BranchManagement
+    { path: '/rooms', component: RoomManagement }, // Route for RoomManagement
+
   ]
 })
 

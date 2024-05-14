@@ -1,29 +1,40 @@
-<!-- SideBar.vue -->
-
 <template>
-  <aside class="hidden md:block bg-white md:w-64 md:border-r md:border-gray-100 overflow-y-auto md:overflow-y-visible">
-    <!-- Sidebar content -->
-    <ul class="py-6">
-      <!-- Sidebar items -->
+  <aside class="hidden md:flex flex-col bg-white text-gray-800 md:w-64 md:border-r md:border-gray-300 overflow-y-auto md:overflow-y-visible">
+    <ul class="py-6 space-y-4">
       <SidebarItem title="Home" icon="home" link="/" />
-      <SidebarItem title="Checklist Management" icon="check-square" link="/checklist" />
-      <SidebarItem title="User Management" icon="user" link="/users" />
-      <SidebarItem title="Equipment Management" icon="archive" link="/equipment" />
-      <SidebarItem title="Documentation Management" icon="book" link="/documentation" />
-      <SidebarItem title="Checklist Customizer" icon="list-ol" link="/customize" />
-      <SidebarItem title="Settings" icon="cog" link="/settings" />
+      <SidebarGroup title="Structure & Resources" icon="building">
+        <SidebarItem title="Branches" icon="code-branch" link="/branches" />
+        <SidebarItem title="Rooms" icon="door-open" link="/rooms" />
+        <SidebarItem title="Users" icon="users" link="/users" />
+        <SidebarItem title="Equipments" icon="tools" link="/equipments" />
+      </SidebarGroup>
+      <SidebarGroup title="Checklists" icon="check-square">
+        <SidebarItem title="Tasks Editor" icon="edit" link="/customize" />
+        <SidebarItem title="Checklists Editor" icon="tasks" link="/checklist" />
+      </SidebarGroup>
+      <SidebarGroup title="Settings" icon="cog">
+        <SidebarItem title="General" icon="sliders-h" link="/settings/general" />
+        <SidebarItem title="Profile" icon="user-circle" link="/settings" />
+      </SidebarGroup>
     </ul>
   </aside>
 </template>
 
 <script>
 import SidebarItem from './SidebarItem.vue';
+import SidebarGroup from './SidebarGroup.vue';
 
 export default {
   name: 'SideBar',
   components: {
     SidebarItem,
+    SidebarGroup,
   },
-  
 }
 </script>
+
+<style scoped>
+aside {
+  transition: width 0.3s ease-in-out;
+}
+</style>

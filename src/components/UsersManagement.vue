@@ -31,14 +31,16 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.branchID }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.username }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            <div class="flex justify-center items-center space-x-4"> <!-- Enhanced alignment and spacing -->
-              <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-110">
-                <i class="fas fa-pen mr-1"></i> <!-- Edit icon -->
+            <div class="flex justify-center items-center space-x-4">
+              <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-110"
+                @click="openUserModal('edit', user)">
+                <i class="fas fa-pen mr-1"></i>
                 Edit
               </button>
 
-              <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-full flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-110">
-                <i class="fas fa-trash-alt mr-1"></i> <!-- Delete icon -->
+              <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-full flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-110"
+                @click="confirmDelete(user.id)">
+                <i class="fas fa-trash-alt mr-1"></i>
                 Delete
               </button>
             </div>
@@ -65,13 +67,12 @@ export default {
       users: [],
       showUserModal: false,
       currentUser: null,
-      editableUser: null, // Clone of currentUser for editing
-      branches: [] // Assuming branches data is available or fetched similarly
+      editableUser: null,
+      branches: []
     };
   },
   created() {
     this.fetchUsers();
-    // Removed the call to this.fetchBranches() as it is not defined
   },
   methods: {
     async fetchUsers() {
@@ -84,12 +85,12 @@ export default {
     },
     openUserModal(mode, user = null) {
       this.currentUser = user;
-      this.editableUser = { ...user }; // Create a deep copy of user for editing
+      this.editableUser = { ...user };
       this.showUserModal = true;
     },
     closeUserModal() {
       this.showUserModal = false;
-      this.editableUser = null; // Reset editable user
+      this.editableUser = null;
     },
     async confirmDelete(userId) {
       if (confirm('Are you sure you want to delete this user?')) {
@@ -101,12 +102,24 @@ export default {
         }
       }
     },
-    handleSave(user) {
-      const index = this.users.findIndex(u => u.id === user.id);
-      if (index !== -1) {
-        this.users[index] = user;
+    async handleSave(user) {
+      if (user.id) {
+        try {
+          await axios.put(`http://localhost:3000/users/${user.id}`, user);
+          const index = this.users.findIndex(u => u.id === user.id);
+          if (index !== -1) {
+            this.users[index] = user;
+          }
+        } catch (error) {
+          console.error('Failed to update user:', error);
+        }
       } else {
-        this.users.push(user);
+        try {
+          const response = await axios.post('http://localhost:3000/users', user);
+          this.users.push(response.data);
+        } catch (error) {
+          console.error('Failed to add user:', error);
+        }
       }
       this.closeUserModal();
     }

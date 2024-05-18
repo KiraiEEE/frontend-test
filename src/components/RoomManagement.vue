@@ -78,9 +78,9 @@
         </tbody>
       </table>
     </div>
-    <transition name="fade">
+    <transition name="bounceIn">
       <div v-if="isEditing" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
+        <div class="bg-white p-6 rounded-lg shadow-lg animate__animated animate__bounceIn">
           <h3 class="text-lg font-bold mb-4">Edit Room</h3>
           <div class="mb-4">
             <label for="editRoomName" class="block text-gray-800 font-bold mb-2">Room Name</label>
@@ -100,9 +100,9 @@
         </div>
       </div>
     </transition>
-    <transition name="fade">
+    <transition name="bounceIn">
       <div v-if="showDeleteModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
+        <div class="bg-white p-6 rounded-lg shadow-lg animate__animated animate__bounceIn">
           <h3 class="text-lg font-bold mb-4">Delete Room</h3>
           <p class="text-gray-800 mb-4">Are you sure you want to delete this room?</p>
           <div class="text-center">

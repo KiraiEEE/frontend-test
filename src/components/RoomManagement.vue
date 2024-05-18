@@ -94,8 +94,8 @@
             </select>
           </div>
           <div class="text-center">
-            <button @click="updateRoom" :disabled="!room.roomName || !room.branchID" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200" :class="{'opacity-50': !room.roomName || !room.branchID}">Save Changes</button>
-            <button @click="isEditing = false" class="ml-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors duration-200">Cancel</button>
+            <button @click="updateRoom" :disabled="!room.roomName || !room.branchID" class="border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out" :class="{'opacity-50': !room.roomName || !room.branchID}">Save Changes</button>
+            <button @click="isEditing = false" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
           </div>
         </div>
       </div>
@@ -106,8 +106,8 @@
           <h3 class="text-lg font-bold mb-4">Delete Room</h3>
           <p class="text-gray-800 mb-4">Are you sure you want to delete this room?</p>
           <div class="text-center">
-            <button @click="deleteRoom(currentRoomID)" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200">Confirm</button>
-            <button @click="showDeleteModal = false" class="ml-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors duration-200">Cancel</button>
+            <button @click="deleteRoom(currentRoomID)" class="border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Confirm</button>
+            <button @click="showDeleteModal = false" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
           </div>
         </div>
       </div>

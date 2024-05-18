@@ -60,7 +60,7 @@
                   <i class="fas fa-edit"></i> Edit
                 </button>
                 <button
-                  @click="confirmDelete(item.roomID)"
+                  @click="showDeleteConfirmation(item.roomID)"
                   class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
                 >
                   <i class="fas fa-trash-alt"></i> Delete
@@ -92,6 +92,18 @@
           </div>
         </div>
       </transition>
+      <transition name="fade">
+        <div v-if="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-lg font-bold mb-4">Delete Room</h3>
+            <p class="text-gray-800 mb-4">Are you sure you want to delete this room?</p>
+            <div class="text-center">
+              <button @click="deleteRoom(currentRoomID)" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-300">Confirm</button>
+              <button @click="showDeleteModal = false" class="ml-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors duration-300">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </transition>
     </div>
   </template>
   
@@ -112,6 +124,8 @@
           branchID: null,
         },
         isEditing: false,
+        showDeleteModal: false,
+        currentRoomID: null,
       };
     },
     created() {
@@ -162,14 +176,14 @@
         try {
           await axios.delete(`http://localhost:3000/rooms/${roomID}`);
           this.rooms = this.rooms.filter(item => item.roomID !== roomID);
+          this.showDeleteModal = false;
         } catch (error) {
           console.error('Error deleting room:', error);
         }
       },
-      confirmDelete(roomID) {
-        if (confirm('Are you sure you want to delete this room?')) {
-          this.deleteRoom(roomID);
-        }
+      showDeleteConfirmation(roomID) {
+        this.currentRoomID = roomID;
+        this.showDeleteModal = true;
       },
       resetRoom() {
         this.room = { roomName: '', branchID: null };

@@ -23,6 +23,8 @@
       No tasks found for this checklist.
     </div>
   </div>
+
+
 </template>
 
 <script>
@@ -72,9 +74,9 @@ export default {
 <style scoped>
 .select-dropdown {
   background-color: white;
-  border: 1px solid #d1d5db; /* Gray-300 */
-  border-radius: 0.375rem; /* 6px */
-  padding: 0.5rem 1rem; /* 8px 16px */
+  border: 1px solid #d1d5db; 
+  border-radius: 0.375rem; 
+  padding: 0.5rem 1rem; 
 }
 </style>
 

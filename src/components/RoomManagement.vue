@@ -1,111 +1,114 @@
 <template>
-    <div class="room-manager bg-white p-6 rounded-lg shadow-lg">
-      <div class="mb-8">
-        <div class="flex gap-3">
-          <div class="w-1/2">
-            <label for="roomName" class="block text-gray-800 font-bold mb-2">Add New Room</label>
-            <input
-              v-model="newRoom.roomName"
-              id="roomName"
-              placeholder="Enter room name"
-              class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
-            />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <div class="room-manager bg-white p-6 rounded-lg shadow-lg">
+    <div class="mb-8">
+      <div class="flex gap-3">
+        <div class="w-1/2">
+          <label for="roomName" class="block text-gray-800 font-bold mb-2">Add New Room</label>
+          <input
+            v-model="newRoom.roomName"
+            id="roomName"
+            placeholder="Enter room name"
+            class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+          />
+        </div>
+        <div class="w-1/2">
+          <label for="branchID" class="block text-gray-800 font-bold mb-2">Select Branch</label>
+          <select
+            v-model="newRoom.branchID"
+            id="branchID"
+            class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+          >
+            <option disabled value="">Please select one</option>
+            <option v-for="branch in branches" :value="branch.branchID" :key="branch.branchID">
+              {{ branch.branchName }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-6 text-center">
+        <button
+          @click="createRoom"
+          class="border border-violet-600 text-violet-600 font-bold py-2 px-4 rounded-full hover:bg-violet-600 hover:text-white transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-50"
+        >
+          Add Room
+        </button>
+      </div>
+    </div>
+
+    <div v-if="rooms.length > 0" class="room-container">
+      <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Room Name</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Branch</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="item in rooms"
+            :key="item.roomID"
+            class="bg-white border-b border-gray-200 hover:bg-gray-100 transition-colors duration-150"
+          >
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"><i class="fas fa-server mr-2"></i>{{ item.roomName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ getBranchName(item.branchID) }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-right">
+              <button
+                @click="editRoom(item)"
+                class="edit-btn border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
+              >
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button
+                @click="showDeleteConfirmation(item.roomID)"
+                class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
+              >
+                <i class="fas fa-trash-alt"></i> Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <transition name="fade" enter-active-class="animate__animated animate__heartBeat" leave-active-class="animate__animated animate__fadeOut">
+      <div v-if="isEditing" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg transform transition-transform duration-200">
+          <h3 class="text-lg font-bold mb-4">Edit Room</h3>
+          <div class="mb-4">
+            <label for="editRoomName" class="block text-gray-800 font-bold mb-2">Room Name</label>
+            <input v-model="room.roomName" id="editRoomName" placeholder="Enter room name" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
           </div>
-          <div class="w-1/2">
-            <label for="branchID" class="block text-gray-800 font-bold mb-2">Select Branch</label>
-            <select
-              v-model="newRoom.branchID"
-              id="branchID"
-              class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
-            >
+          <div class="mb-4">
+            <label for="editBranchID" class="block text-gray-800 font-bold mb-2">Select Branch</label>
+            <select v-model="room.branchID" id="editBranchID" class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
               <option disabled value="">Please select one</option>
-              <option v-for="branch in branches" :value="branch.branchID" :key="branch.branchID">
-                {{ branch.branchName }}
-              </option>
+              <option v-for="branch in branches" :value="branch.branchID" :key="branch.branchID">{{ branch.branchName }}</option>
             </select>
           </div>
-        </div>
-        <div class="mt-6 text-center">
-          <button
-            @click="createRoom"
-            class="border border-violet-600 text-violet-600 font-bold py-2 px-4 rounded-full hover:bg-violet-600 hover:text-white transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-50"
-          >
-            Add Room
-          </button>
-        </div>
-      </div>
-  
-      <div v-if="rooms.length > 0" class="room-container">
-        <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-          <thead>
-            <tr class="bg-gray-200">
-              <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Room Name</th>
-              <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Branch</th>
-              <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="item in rooms"
-              :key="item.roomID"
-              class="bg-white border-b border-gray-200 hover:bg-gray-100 transition-colors duration-150"
-            >
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"><i class="fas fa-server mr-2"></i>{{ item.roomName }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ getBranchName(item.branchID) }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-right">
-                <button
-                  @click="editRoom(item)"
-                  class="edit-btn border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
-                >
-                  <i class="fas fa-edit"></i> Edit
-                </button>
-                <button
-                  @click="showDeleteConfirmation(item.roomID)"
-                  class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
-                >
-                  <i class="fas fa-trash-alt"></i> Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <transition name="fade">
-        <div v-if="isEditing" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h3 class="text-lg font-bold mb-4">Edit Room</h3>
-            <div class="mb-4">
-              <label for="editRoomName" class="block text-gray-800 font-bold mb-2">Room Name</label>
-              <input v-model="room.roomName" id="editRoomName" placeholder="Enter room name" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
-            </div>
-            <div class="mb-4">
-              <label for="editBranchID" class="block text-gray-800 font-bold mb-2">Select Branch</label>
-              <select v-model="room.branchID" id="editBranchID" class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
-                <option disabled value="">Please select one</option>
-                <option v-for="branch in branches" :value="branch.branchID" :key="branch.branchID">{{ branch.branchName }}</option>
-              </select>
-            </div>
-            <div class="text-center">
-              <button @click="updateRoom" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-300">Save Changes</button>
-              <button @click="isEditing = false" class="ml-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors duration-300">Cancel</button>
-            </div>
+          <div class="text-center">
+            <button @click="updateRoom" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200">Save Changes</button>
+            <button @click="isEditing = false" class="ml-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors duration-200">Cancel</button>
           </div>
         </div>
-      </transition>
-      <transition name="fade">
-        <div v-if="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h3 class="text-lg font-bold mb-4">Delete Room</h3>
-            <p class="text-gray-800 mb-4">Are you sure you want to delete this room?</p>
-            <div class="text-center">
-              <button @click="deleteRoom(currentRoomID)" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-300">Confirm</button>
-              <button @click="showDeleteModal = false" class="ml-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors duration-300">Cancel</button>
-            </div>
+      </div>
+    </transition>
+    <transition name="fade" enter-active-class="animate__animated animate__headShake" leave-active-class="animate__animated animate__fadeOut">
+      <div v-if="showDeleteModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg transform transition-transform duration-200">
+          <h3 class="text-lg font-bold mb-4">Delete Room</h3>
+          <p class="text-gray-800 mb-4">Are you sure you want to delete this room?</p>
+          <div class="text-center">
+            <button @click="deleteRoom(currentRoomID)" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200">Confirm</button>
+            <button @click="showDeleteModal = false" class="ml-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors duration-200">Cancel</button>
           </div>
         </div>
-      </transition>
-    </div>
-  </template>
+      </div>
+    </transition>
+  </div>
+</template>
+
   
   <script>
   import axios from 'axios';

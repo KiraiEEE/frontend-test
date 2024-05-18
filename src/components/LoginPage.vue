@@ -58,8 +58,9 @@ export default {
       });
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('userId', data.userId); 
-        this.$emit('auth-success', { userId: data.userId });
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('role', data.role); // Save role to localStorage
+        this.$emit('auth-success', { userId: data.userId, role: data.role });
       } else {
         console.error(data.message); 
       }

@@ -138,11 +138,9 @@
   </div>
 </template>
 
-  
   <script>
   import axios from 'axios';
 
-  
   export default {
     data() {
       return {
@@ -162,6 +160,7 @@
         isEditing: false,
         showDeleteModal: false,
         currentEquipmentID: null,
+        backendUrl: localStorage.getItem('backendUrl') || 'http://localhost:3000', // Default to localhost if not set
       };
     },
     created() {
@@ -172,7 +171,7 @@
     methods: {
       async fetchEquipments() {
         try {
-          const response = await axios.get('http://localhost:3000/equipments');
+          const response = await axios.get(`${this.backendUrl}/equipments`);
           this.equipments = response.data;
         } catch (error) {
           console.error('Error fetching equipments:', error);
@@ -180,7 +179,7 @@
       },
       async fetchRooms() {
         try {
-          const response = await axios.get('http://localhost:3000/rooms');
+          const response = await axios.get(`${this.backendUrl}/rooms`);
           this.rooms = response.data;
         } catch (error) {
           console.error('Error fetching rooms:', error);
@@ -188,7 +187,7 @@
       },
       async fetchChecklists() {
         try {
-          const response = await axios.get('http://localhost:3000/checklists');
+          const response = await axios.get(`${this.backendUrl}/checklists`);
           this.checklists = response.data;
         } catch (error) {
           console.error('Error fetching checklists:', error);
@@ -196,7 +195,7 @@
       },
       async createEquipment() {
         try {
-          const response = await axios.post('http://localhost:3000/equipments', this.newEquipment);
+          const response = await axios.post(`${this.backendUrl}/equipments`, this.newEquipment);
           this.equipments.push(response.data);
           this.resetNewEquipment();
         } catch (error) {
@@ -205,7 +204,7 @@
       },
       async updateEquipment() {
         try {
-          await axios.put(`http://localhost:3000/equipments/${this.equipment.equipmentID}`, this.equipment);
+          await axios.put(`${this.backendUrl}/equipments/${this.equipment.equipmentID}`, this.equipment);
           const index = this.equipments.findIndex(item => item.equipmentID === this.equipment.equipmentID);
           this.equipments[index] = { ...this.equipment };
           this.resetEquipment();
@@ -219,7 +218,7 @@
       },
       async deleteEquipment(equipmentID) {
         try {
-          await axios.delete(`http://localhost:3000/equipments/${equipmentID}`);
+          await axios.delete(`${this.backendUrl}/equipments/${equipmentID}`);
           this.equipments = this.equipments.filter(item => item.equipmentID !== equipmentID);
           this.showDeleteModal = false;
         } catch (error) {
@@ -248,4 +247,3 @@
     },
   };
   </script>
-

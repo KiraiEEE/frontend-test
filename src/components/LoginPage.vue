@@ -8,6 +8,11 @@
 <div class="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
   <h1 class="text-2xl font-semibold mb-4">Login</h1>
   <form @submit.prevent="handleLogin">
+    <!-- Backend URL Input -->
+    <div class="mb-4">
+      <label for="backendUrl" class="block text-gray-600">Backend URL</label>
+      <input type="text" id="backendUrl" v-model="backendUrl" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" :placeholder="defaultBackendUrl">
+    </div>
     <!-- Username Input -->
     <div class="mb-4">
       <label for="username" class="block text-gray-600">Username</label>
@@ -40,13 +45,17 @@ export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
+      backendUrl: localStorage.getItem('backendUrl') || '',
+      defaultBackendUrl: 'http://localhost:3000'
     };
   },
   methods: {
   async handleLogin() {
     try {
-      const response = await fetch('http://localhost:3000/users/login', {
+      const url = this.backendUrl || this.defaultBackendUrl;
+      localStorage.setItem('backendUrl', url); // Save backend URL to localStorage
+      const response = await fetch(`${url}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

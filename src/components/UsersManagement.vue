@@ -100,7 +100,6 @@
     </transition>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 
@@ -128,14 +127,16 @@ export default {
   },
   methods: {
     async fetchUsers() {
+      const backendUrl = localStorage.getItem('backendUrl');
       try {
-        const response = await axios.get('http://localhost:3000/users');
+        const response = await axios.get(`${backendUrl}/users`);
         this.users = response.data;
       } catch (error) {
         console.error('Error fetching users:', error);
       }
     },
     async createUser() {
+      const backendUrl = localStorage.getItem('backendUrl');
       try {
         const formData = new FormData();
         formData.append('photo', this.newUser.photo);
@@ -146,10 +147,10 @@ export default {
         formData.append('role', this.newUser.role);
         formData.append('branchID', this.newUser.branchID);
 
-        const uploadResponse = await axios.post('http://localhost:3000/upload', formData);
+        const uploadResponse = await axios.post(`${backendUrl}/upload`, formData);
         this.newUser.photo = uploadResponse.data.fileName;
 
-        const response = await axios.post('http://localhost:3000/users', this.newUser);
+        const response = await axios.post(`${backendUrl}/users`, this.newUser);
         this.users.push(response.data);
         this.showAddUser = false;
         this.resetNewUser();
@@ -158,8 +159,9 @@ export default {
       }
     },
     async editUser(userID) {
+      const backendUrl = localStorage.getItem('backendUrl');
       try {
-        const response = await axios.get(`http://localhost:3000/users/${userID}`);
+        const response = await axios.get(`${backendUrl}/users/${userID}`);
         this.newUser = response.data;
         this.showAddUserModal(true, true);
       } catch (error) {
@@ -167,6 +169,7 @@ export default {
       }
     },
     async updateUser() {
+      const backendUrl = localStorage.getItem('backendUrl');
       try {
         const formData = new FormData();
         formData.append('photo', this.newUser.photo);
@@ -177,10 +180,10 @@ export default {
         formData.append('role', this.newUser.role);
         formData.append('branchID', this.newUser.branchID);
 
-        const uploadResponse = await axios.post('http://localhost:3000/upload', formData);
+        const uploadResponse = await axios.post(`${backendUrl}/upload`, formData);
         this.newUser.photo = uploadResponse.data.fileName;
 
-        await axios.put(`http://localhost:3000/users/${this.newUser.id}`, this.newUser);
+        await axios.put(`${backendUrl}/users/${this.newUser.id}`, this.newUser);
         this.fetchUsers();
         this.showAddUser = false;
         this.resetNewUser();
@@ -189,8 +192,9 @@ export default {
       }
     },
     async deleteUser(userID) {
+      const backendUrl = localStorage.getItem('backendUrl');
       try {
-        await axios.delete(`http://localhost:3000/users/${userID}`);
+        await axios.delete(`${backendUrl}/users/${userID}`);
         this.users = this.users.filter(user => user.id !== userID);
         this.showDeleteModal = false;
       } catch (error) {
@@ -221,4 +225,3 @@ export default {
   },
 };
 </script>
-

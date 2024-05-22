@@ -72,7 +72,6 @@
     </div>
   </nav>
 </template>
-
 <script>
 import axios from 'axios';
 
@@ -93,10 +92,11 @@ export default {
     },
     fetchUserPhoto() {
       const userId = localStorage.getItem('userId');
-      axios.get(`http://localhost:3000/users/${userId}`)
+      const backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000'; // Default to localhost if not set
+      axios.get(`${backendUrl}/users/${userId}`)
         .then(response => {
           const photoFilename = response.data.photo;
-          this.userPhotoUrl = `http://localhost:3000/images/${photoFilename}`;
+          this.userPhotoUrl = `${backendUrl}/images/${photoFilename}`;
         })
         .catch(error => {
           console.error('Error fetching user photo:', error);

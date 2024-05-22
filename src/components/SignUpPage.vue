@@ -7,6 +7,11 @@
             <img src="@/assets/logo.png" alt="logo" />
           </div>
         </div>
+        <!-- Backend URL Input -->
+        <div class="mb-4">
+          <label for="backendUrl" class="block text-gray-600">Backend URL</label>
+          <input type="text" id="backendUrl" v-model="backendUrl" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" :placeholder="defaultBackendUrl">
+        </div>
         <div class="flex justify-between gap-3">
           <div class="w-1/3">
             <label for="name" class="block text-gray-600">Name</label>
@@ -106,11 +111,15 @@ export default {
       photo: null,
       showNotification: false,
       notificationMessage: '',
-      notificationType: 'success' // Default notification type
+      notificationType: 'success', // Default notification type
+      backendUrl: localStorage.getItem('backendUrl') || '',
+      defaultBackendUrl: 'http://localhost:3000'
     };
   },
   methods: {
     async handleSignUp() {
+      const url = this.backendUrl || this.defaultBackendUrl;
+      localStorage.setItem('backendUrl', url); // Save backend URL to localStorage
       if (!this.photo) {
         this.notificationMessage = "Photo is required!";
         this.notificationType = 'warning'; // Set notification type to warning
@@ -132,13 +141,13 @@ export default {
       const formData = new FormData();
       formData.append('image', this.photo);
       try {
-        const uploadResponse = await axios.post('http://localhost:3000/upload', formData, {
+        const uploadResponse = await axios.post(`${url}/upload`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
         const photoFilename = uploadResponse.data.fileName;
-        const response = await axios.post('http://localhost:3000/users/signup', {
+        const response = await axios.post(`${url}/users/signup`, {
           name: this.name,
           username: this.username,
           CIN: this.cin,
@@ -181,7 +190,8 @@ export default {
     },
     async fetchBranches() {
       try {
-        const response = await axios.get('http://localhost:3000/branches');
+        const url = this.backendUrl || this.defaultBackendUrl;
+        const response = await axios.get(`${url}/branches`);
         this.branches = response.data;
       } catch (error) {
         console.error('Error fetching branches:', error);

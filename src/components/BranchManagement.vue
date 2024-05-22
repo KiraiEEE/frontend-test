@@ -117,7 +117,8 @@
     methods: {
       async fetchBranches() {
         try {
-          const response = await axios.get('http://localhost:3000/branches');
+          const backendUrl = localStorage.getItem('backendUrl');
+          const response = await axios.get(`${backendUrl}/branches`);
           this.branches = response.data;
         } catch (error) {
           console.error('Error fetching branches:', error);
@@ -125,7 +126,8 @@
       },
       async createBranch() {
         try {
-          const response = await axios.post('http://localhost:3000/branches', this.newBranch);
+          const backendUrl = localStorage.getItem('backendUrl');
+          const response = await axios.post(`${backendUrl}/branches`, this.newBranch);
           this.branches.push(response.data);
           this.resetNewBranch();
         } catch (error) {
@@ -134,7 +136,8 @@
       },
       async updateBranch() {
         try {
-          await axios.put(`http://localhost:3000/branches/${this.branch.branchID}`, this.branch);
+          const backendUrl = localStorage.getItem('backendUrl');
+          await axios.put(`${backendUrl}/branches/${this.branch.branchID}`, this.branch);
           const index = this.branches.findIndex(item => item.branchID === this.branch.branchID);
           this.branches[index] = { ...this.branch };
           this.resetBranch();
@@ -148,7 +151,8 @@
       },
       async deleteBranch(branchID) {
         try {
-          await axios.delete(`http://localhost:3000/branches/${branchID}`);
+          const backendUrl = localStorage.getItem('backendUrl');
+          await axios.delete(`${backendUrl}/branches/${branchID}`);
           this.branches = this.branches.filter(item => item.branchID !== branchID);
           this.showDeleteModal = false;
         } catch (error) {
@@ -169,5 +173,3 @@
     },
   };
   </script>
-
-

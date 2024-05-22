@@ -115,7 +115,6 @@
   </div>
 </template>
 
-  
   <script>
   import axios from 'axios';
   
@@ -135,16 +134,18 @@
         isEditing: false,
         showDeleteModal: false,
         currentRoomID: null,
+        backendUrl: ''
       };
     },
     created() {
+      this.backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
       this.fetchRooms();
       this.fetchBranches();
     },
     methods: {
       async fetchRooms() {
         try {
-          const response = await axios.get('http://localhost:3000/rooms');
+          const response = await axios.get(`${this.backendUrl}/rooms`);
           this.rooms = response.data;
         } catch (error) {
           console.error('Error fetching rooms:', error);
@@ -152,7 +153,7 @@
       },
       async fetchBranches() {
         try {
-          const response = await axios.get('http://localhost:3000/branches');
+          const response = await axios.get(`${this.backendUrl}/branches`);
           this.branches = response.data;
         } catch (error) {
           console.error('Error fetching branches:', error);
@@ -160,7 +161,7 @@
       },
       async createRoom() {
         try {
-          const response = await axios.post('http://localhost:3000/rooms', this.newRoom);
+          const response = await axios.post(`${this.backendUrl}/rooms`, this.newRoom);
           this.rooms.push(response.data);
           this.resetNewRoom();
         } catch (error) {
@@ -169,7 +170,7 @@
       },
       async updateRoom() {
         try {
-          await axios.put(`http://localhost:3000/rooms/${this.room.roomID}`, this.room);
+          await axios.put(`${this.backendUrl}/rooms/${this.room.roomID}`, this.room);
           const index = this.rooms.findIndex(item => item.roomID === this.room.roomID);
           this.rooms[index] = { ...this.room };
           this.resetRoom();
@@ -183,7 +184,7 @@
       },
       async deleteRoom(roomID) {
         try {
-          await axios.delete(`http://localhost:3000/rooms/${roomID}`);
+          await axios.delete(`${this.backendUrl}/rooms/${roomID}`);
           this.rooms = this.rooms.filter(item => item.roomID !== roomID);
           this.showDeleteModal = false;
         } catch (error) {
@@ -208,5 +209,3 @@
     },
   };
   </script>
-
-

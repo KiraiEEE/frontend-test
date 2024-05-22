@@ -26,7 +26,6 @@
 
 
 </template>
-
 <script>
 import axios from 'axios';
 
@@ -45,16 +44,18 @@ export default {
   },
   methods: {
     async fetchChecklists() {
+      const backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
       try {
-        const response = await axios.get('http://localhost:3000/checklists');
+        const response = await axios.get(`${backendUrl}/checklists`);
         this.checklists = response.data;
       } catch (error) {
         console.error('Error fetching checklists:', error);
       }
     },
     async fetchTasks() {
+      const backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
       try {
-        const response = await axios.get('http://localhost:3000/tasks');
+        const response = await axios.get(`${backendUrl}/tasks`);
         this.tasks = response.data;
       } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -79,4 +80,3 @@ export default {
   padding: 0.5rem 1rem; 
 }
 </style>
-

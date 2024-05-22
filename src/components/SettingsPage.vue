@@ -58,7 +58,6 @@
   </div>
   <Notification v-if="showNotification" :message="notificationMessage" :show="showNotification" :type="notificationType" @hide="showNotification = false" />
 </template>
-
 <script>
 import axios from 'axios';
 import Notification from './NotifMsgBox.vue';
@@ -90,8 +89,9 @@ export default {
   methods: {
     async fetchUserData() {
       const userId = localStorage.getItem('userId');
+      const backendUrl = localStorage.getItem('backendUrl');
       try {
-        const response = await axios.get(`http://localhost:3000/users/${userId}`);
+        const response = await axios.get(`${backendUrl}/users/${userId}`);
         this.user = {...response.data, password: ''}; // Clear password after fetching
       } catch (error) {
         console.error('Failed to fetch user data:', error);
@@ -104,8 +104,9 @@ export default {
       }
     },
     async fetchBranches() {
+      const backendUrl = localStorage.getItem('backendUrl');
       try {
-        const response = await axios.get('http://localhost:3000/branches');
+        const response = await axios.get(`${backendUrl}/branches`);
         this.branches = response.data;
       } catch (error) {
         console.error('Failed to fetch branches:', error);
@@ -113,6 +114,7 @@ export default {
     },
     async updateProfile() {
       const userId = localStorage.getItem('userId');
+      const backendUrl = localStorage.getItem('backendUrl');
       const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
       if (!emailPattern.test(this.user.email)) {
         this.notificationMessage = 'Invalid email format!';
@@ -124,7 +126,7 @@ export default {
         return;
       }
       try {
-        await axios.put(`http://localhost:3000/users/${userId}`, this.user);
+        await axios.put(`${backendUrl}/users/${userId}`, this.user);
         this.notificationMessage = 'Profile updated successfully!';
         this.notificationType = 'success';
         this.showNotification = true;

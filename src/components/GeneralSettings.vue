@@ -22,6 +22,10 @@
         <option value="es">Spanish</option>
       </select>
     </div>
+    <div class="setting-item mb-4">
+      <label for="serverUrl" class="block text-gray-800 font-bold mb-2">Backend Server URL</label>
+      <input type="text" id="serverUrl" v-model="settings.serverUrl" class="form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm" placeholder="https://api.example.com:3000">
+    </div>
     <button @click="saveSettings" class="mt-4 border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
       Save Changes
     </button>

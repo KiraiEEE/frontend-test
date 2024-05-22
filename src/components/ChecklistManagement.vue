@@ -91,9 +91,7 @@
     </transition>
   </div>
 </template>
-
-  
-  <script>
+<script>
   import axios from 'axios';
   
   export default {
@@ -109,15 +107,17 @@
         isEditing: false,
         showDeleteModal: false,
         currentChecklistId: null,
+        backendUrl: ''
       };
     },
     created() {
+      this.backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
       this.fetchChecklists();
     },
     methods: {
       async fetchChecklists() {
         try {
-          const response = await axios.get('http://localhost:3000/checklists');
+          const response = await axios.get(`${this.backendUrl}/checklists`);
           this.checklists = response.data;
         } catch (error) {
           console.error('Error fetching checklists:', error);
@@ -125,7 +125,7 @@
       },
       async createChecklist() {
         try {
-          const response = await axios.post('http://localhost:3000/checklists', this.newChecklist);
+          const response = await axios.post(`${this.backendUrl}/checklists`, this.newChecklist);
           this.checklists.push(response.data);
           this.resetNewChecklist();
         } catch (error) {
@@ -134,7 +134,7 @@
       },
       async updateChecklist() {
         try {
-          await axios.put(`http://localhost:3000/checklists/${this.checklist.checklistId}`, this.checklist);
+          await axios.put(`${this.backendUrl}/checklists/${this.checklist.checklistId}`, this.checklist);
           const index = this.checklists.findIndex(item => item.checklistId === this.checklist.checklistId);
           this.checklists[index] = { ...this.checklist };
           this.resetChecklist();
@@ -148,7 +148,7 @@
       },
       async deleteChecklist(checklistId) {
         try {
-          await axios.delete(`http://localhost:3000/checklists/${checklistId}`);
+          await axios.delete(`${this.backendUrl}/checklists/${checklistId}`);
           this.checklists = this.checklists.filter(item => item.checklistId !== checklistId);
           this.showDeleteModal = false;
         } catch (error) {
@@ -168,6 +168,4 @@
       }
     },
   };
-  </script>
-
-
+</script>

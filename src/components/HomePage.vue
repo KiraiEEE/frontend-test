@@ -54,7 +54,6 @@
 
 
 </template>
-
 <script>
 import axios from 'axios';
 
@@ -74,7 +73,8 @@ export default {
   methods: {
     async fetchRooms() {
       try {
-        const response = await axios.get('http://localhost:3000/rooms');
+        const backendUrl = localStorage.getItem('backendUrl');
+        const response = await axios.get(`${backendUrl}/rooms`);
         this.rooms = response.data;
       } catch (error) {
         console.error('Error fetching rooms:', error);

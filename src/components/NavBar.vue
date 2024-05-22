@@ -36,7 +36,7 @@
     <div class="flex items-center">
       <div class="relative group mr-4"> 
         <button class="text-gray-600 text-lg focus:outline-none hover:text-gray-800 transition-colors duration-300">
-           <img class="flex-shrink-0 object-cover mx-1 rounded-full w-9 h-9 hover:opacity-75 transition-opacity duration-300" src="@/assets/avatar.png" alt="User Avatar">
+           <img :src="userPhotoUrl" alt="User Avatar" class="flex-shrink-0 object-cover mx-1 rounded-full w-9 h-9 hover:opacity-75 transition-opacity duration-300">
         </button>
         <div
           class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
@@ -74,8 +74,15 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "NavBar",
+  data() {
+    return {
+      userPhotoUrl: '',
+    };
+  },
   methods: {
     logout() {
       localStorage.removeItem('userId');
@@ -83,7 +90,21 @@ export default {
     },
     toggleSidebar() {
       this.$emit('toggle-sidebar');
+    },
+    fetchUserPhoto() {
+      const userId = localStorage.getItem('userId');
+      axios.get(`http://localhost:3000/users/${userId}`)
+        .then(response => {
+          const photoFilename = response.data.photo;
+          this.userPhotoUrl = `http://localhost:3000/images/${photoFilename}`;
+        })
+        .catch(error => {
+          console.error('Error fetching user photo:', error);
+        });
     }
+  },
+  created() {
+    this.fetchUserPhoto();
   }
 };
 </script>

@@ -13,8 +13,8 @@
         <SidebarItem title="Checklists Editor" icon="tasks" link="/checklist" />
       </SidebarGroup>
       <SidebarGroup title="Settings" icon="cog">
-        <SidebarItem title="General" icon="sliders-h" link="/settings/general" />
         <SidebarItem title="Profile" icon="user-circle" link="/settings" />
+        <SidebarItem title="General" icon="sliders-h" link="/settings/general" />
       </SidebarGroup>
     </ul>
   </aside>

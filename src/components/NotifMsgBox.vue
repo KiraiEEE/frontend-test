@@ -1,6 +1,11 @@
 <template>
-  <transition name="slide-fade" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave">
-    <div v-if="show" class="fixed top-4 right-4 z-50 p-4 bg-white shadow-md rounded-lg">
+  <transition 
+    enter-active-class="animate__animated animate__fadeInDown" 
+    leave-active-class="animate__animated animate__fadeOutUp"
+    @after-enter="handleAfterEnter" 
+    @after-leave="handleAfterLeave"
+  >
+    <div v-if="show" class="fixed top-4 right-4 z-50 p-4 bg-white border-blue-500 border-2 shadow-lg rounded-lg">
       <p>{{ message }}</p>
     </div>
   </transition>
@@ -33,11 +38,6 @@ export default {
 </script>
 
 <style scoped>
-.slide-fade-enter-active, .slide-fade-leave-active {
-  transition: opacity 0.5s, transform 0.5s;
-}
-.slide-fade-enter, .slide-fade-leave-to /* .slide-fade-leave-active in <2.1.8 */ {
-  opacity: 0;
-  transform: translateY(-20px);
-}
+@import 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css';
 </style>
+

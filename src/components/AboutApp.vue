@@ -1,7 +1,6 @@
 <template>
   <div class="about-us-section p-6">
     <h1 class="text-3xl font-bold text-center mb-4">About Us</h1>
-    <img src="@/assets/logo2.png" alt="App Logo" class="mx-auto my-4">
     <p class="text-lg text-gray-700">
       Welcome to our application, a cutting-edge solution designed and developed with dedication by <strong>Akram Ben Fekih</strong>. 
       Our app aims to streamline operations and enhance user engagement through intuitive design and robust functionality.

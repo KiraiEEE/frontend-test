@@ -11,6 +11,7 @@
       <SidebarGroup title="Checklists" icon="check-square">
         <SidebarItem title="Tasks Editor" icon="edit" link="/customize" />
         <SidebarItem title="Checklists Editor" icon="tasks" link="/checklist" />
+        <SidebarItem title="Documentations" icon="file-alt" link="/documentations" />
       </SidebarGroup>
       <SidebarGroup title="Settings" icon="cog">
         <SidebarItem title="Profile" icon="user-circle" link="/settings" />

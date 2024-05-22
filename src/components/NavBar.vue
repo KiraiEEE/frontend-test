@@ -45,13 +45,13 @@
             to="/settings"
             class="block px-4 py-2 text-gray-800 hover:bg-gray-200"
           >
-            Profile Settings
+            <i class="fas fa-cog mr-2"></i>Profile Settings
           </router-link>
           <router-link to="/about" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-            About
+            <i class="fas fa-info-circle mr-2"></i>About
           </router-link>
           <button @click="logout" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200">
-            Logout
+            <i class="fas fa-sign-out-alt mr-2"></i>Logout
           </button>
         </div>
       </div>

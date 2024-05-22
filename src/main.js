@@ -24,6 +24,8 @@ import ChecklistCustomizer from './components/ChecklistCustomizer.vue';
 import AboutApp from './components/AboutApp.vue';
 import BranchManagement from './components/BranchManagement.vue';
 import RoomManagement from './components/RoomManagement.vue';
+import GeneralSettings from './components/GeneralSettings.vue';
+
 
 // Create a router instance
 const router = createRouter({
@@ -33,14 +35,14 @@ const router = createRouter({
     { path: '/', component: HomePage },
     { path: '/users', component: UsersManagement },
     { path: '/checklist', component: ChecklistManagement },
-    { path: '/equipment', component: EquipmentManagement },
-    { path: '/documentation', component: DocumentationManagement },
+    { path: '/equipments', component: EquipmentManagement },
+    { path: '/documentations', component: DocumentationManagement },
     { path: '/settings', component: SettingsPage },
     { path: '/customize', component: ChecklistCustomizer },
     { path: '/about', component: AboutApp},
-    { path: '/branch', component: BranchManagement }, // Route for BranchManagement
+    { path: '/branches', component: BranchManagement }, // Route for BranchManagement
     { path: '/rooms', component: RoomManagement }, // Route for RoomManagement
-
+    { path: '/settings/general', component: GeneralSettings }, // Route for GeneralSettings
   ]
 })
 

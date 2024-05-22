@@ -1,10 +1,9 @@
 <template>
   <transition name="fade">
     <div v-if="show" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <div class="mb-4">
-          <p class="text-gray-800 text-lg">{{ message }}</p>
-        </div>
+      <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 rounded-lg shadow-lg max-w-sm w-full" role="alert">
+        <p class="font-bold">Informational message</p>
+        <p class="text-sm">{{ message }}</p>
         <button
           @click="confirm"
           class="bg-purple-600 text-white font-bold py-3 px-6 rounded-md hover:bg-purple-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"

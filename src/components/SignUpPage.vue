@@ -57,7 +57,7 @@
           </div>
           <div class="w-1/2">
             <label for="photoUpload" class="block text-gray-600">Photo</label>
-            <input type="file" id="photoUpload" @change="handleFileUpload" accept="image/*" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500">
+            <input type="file" id="photoUpload" @change="handleFileUpload" accept="image/*" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
           </div>
         </div>
         <!-- Sign Up Button -->
@@ -78,7 +78,7 @@
           Already have an account? <a class="text-blue-500 hover:text-blue-700 cursor-pointer" @click="handleGoToLogin">Log in</a>
         </p>
       </form>
-      <Notification v-if="showNotification" :message="notificationMessage" :show="showNotification" @hide="showNotification = false" />
+      <Notification v-if="showNotification" :message="notificationMessage" :type="notificationType" :show="showNotification" @hide="showNotification = false" />
     </div>
   </div>
 </template>
@@ -105,17 +105,28 @@ export default {
       branches: [],
       photo: null,
       showNotification: false,
-      notificationMessage: ''
+      notificationMessage: '',
+      notificationType: 'success' // Default notification type
     };
   },
   methods: {
     async handleSignUp() {
-      if (this.password !== this.confirmPassword) {
-        this.notificationMessage = "Passwords do not match!";
+      if (!this.photo) {
+        this.notificationMessage = "Photo is required!";
+        this.notificationType = 'warning'; // Set notification type to warning
         this.showNotification = true;
         setTimeout(() => {
           this.showNotification = false;
-        }, 1000);
+        }, 3000); // Adjusted to match the notification box timing
+        return;
+      }
+      if (this.password !== this.confirmPassword) {
+        this.notificationMessage = "Passwords do not match!";
+        this.notificationType = 'warning'; // Set notification type to warning
+        this.showNotification = true;
+        setTimeout(() => {
+          this.showNotification = false;
+        }, 3000); // Adjusted to match the notification box timing
         return;
       }
       const formData = new FormData();
@@ -139,25 +150,30 @@ export default {
         });
         if (response.status === 201) {
           this.notificationMessage = "Signup successful!";
+          this.notificationType = 'success'; // Ensure the notification type is success
           this.showNotification = true;
           setTimeout(() => {
             this.showNotification = false;
-          }, 1000);
-          this.$router.push('/');
+            setTimeout(() => {
+              window.location.reload(); // Reload the page after 3 seconds of showing the success message
+            }, 10);
+          }, 3000); // Adjusted to match the notification box timing
         } else {
           this.notificationMessage = response.data.message;
+          this.notificationType = 'warning'; // Set notification type based on response
           this.showNotification = true;
           setTimeout(() => {
             this.showNotification = false;
-          }, 1000);
+          }, 3000); // Adjusted to match the notification box timing
         }
       } catch (error) {
         console.error('Network error:', error);
         this.notificationMessage = 'Network error: ' + error.message;
+        this.notificationType = 'warning'; // Set notification type to warning for errors
         this.showNotification = true;
         setTimeout(() => {
           this.showNotification = false;
-        }, 1000);
+        }, 3000); // Adjusted to match the notification box timing
       }
     },
     handleFileUpload(event) {

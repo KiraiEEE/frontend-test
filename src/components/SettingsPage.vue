@@ -15,14 +15,6 @@
           </div>
           <div class="w-full px-3">
             <div class="mb-5">
-              <label for="email" class="block text-gray-800 font-bold mb-2">
-                Email
-              </label>
-              <input v-model="user.email" type="email" id="email" placeholder="Enter your email" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
-            </div>
-          </div>
-          <div class="w-full px-3">
-            <div class="mb-5">
               <label for="username" class="block text-gray-800 font-bold mb-2">
                 Username
               </label>
@@ -31,10 +23,10 @@
           </div>
           <div class="w-full px-3">
             <div class="mb-5">
-              <label for="password" class="block text-gray-800 font-bold mb-2">
-                New Password
+              <label for="email" class="block text-gray-800 font-bold mb-2">
+                Email
               </label>
-              <input v-model="user.password" type="password" id="password" placeholder="Enter new password" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
+              <input v-model="user.email" type="email" id="email" placeholder="Enter your email" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}">
             </div>
           </div>
           <div class="w-full px-3">
@@ -47,6 +39,14 @@
               </select>
             </div>
           </div>
+          <div class="w-full px-3">
+            <div class="mb-5">
+              <label for="password" class="block text-gray-800 font-bold mb-2">
+                New Password
+              </label>
+              <input v-model="user.password" type="password" id="password" placeholder="Enter new password" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
+            </div>
+          </div>
         </div>
         <div class="text-center">
           <button class="border border-violet-600 text-violet-600 font-bold py-2 px-4 rounded-full hover:bg-violet-600 hover:text-white transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-50" type="submit">
@@ -56,7 +56,7 @@
       </form>
     </div>
   </div>
-  <Notification v-if="showNotification" :message="notificationMessage" :show="showNotification" @hide="showNotification = false" />
+  <Notification v-if="showNotification" :message="notificationMessage" :show="showNotification" :type="notificationType" @hide="showNotification = false" />
 </template>
 
 <script>
@@ -79,7 +79,8 @@ export default {
       },
       branches: [],
       showNotification: false,
-      notificationMessage: ''
+      notificationMessage: '',
+      notificationType: 'success' // Default notification type
     };
   },
   created() {
@@ -95,6 +96,7 @@ export default {
       } catch (error) {
         console.error('Failed to fetch user data:', error);
         this.notificationMessage = 'Failed to fetch user data: ' + error.message;
+        this.notificationType = 'warning';
         this.showNotification = true;
         setTimeout(() => {
           this.showNotification = false;
@@ -111,9 +113,20 @@ export default {
     },
     async updateProfile() {
       const userId = localStorage.getItem('userId');
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      if (!emailPattern.test(this.user.email)) {
+        this.notificationMessage = 'Invalid email format!';
+        this.notificationType = 'warning';
+        this.showNotification = true;
+        setTimeout(() => {
+          this.showNotification = false;
+        }, 3000);
+        return;
+      }
       try {
         await axios.put(`http://localhost:3000/users/${userId}`, this.user);
         this.notificationMessage = 'Profile updated successfully!';
+        this.notificationType = 'success';
         this.showNotification = true;
         setTimeout(() => {
           this.showNotification = false;
@@ -121,6 +134,7 @@ export default {
       } catch (error) {
         console.error('Failed to update profile:', error);
         this.notificationMessage = 'Failed to update profile: ' + error.message;
+        this.notificationType = 'warning';
         this.showNotification = true;
         setTimeout(() => {
           this.showNotification = false;

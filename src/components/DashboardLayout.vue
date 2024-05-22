@@ -1,13 +1,13 @@
 <template>
   <div>
-    <NavBar @toggle-sidebar="toggleSidebar" />
+    <NavBar @toggle-sidebar="toggleSidebar" class="sticky top-0 z-50" />
     <div class="flex">
       <transition
         name="slide"
         enter-active-class="animate-slide-in"
         leave-active-class="animate-slide-out"
       >
-        <SideBar v-if="sidebarOpen" :selectedItem="selectedItem" @updateSelectedItem="updateSelectedItem" class="w-64" />
+        <SideBar v-if="sidebarOpen" :selectedItem="selectedItem" @updateSelectedItem="updateSelectedItem" class="w-64 sticky top-0" />
       </transition>
       <div class="flex-grow bg-gray-50 p-4 transition-all duration-300 ease-in-out">
         <router-view></router-view>

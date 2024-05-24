@@ -10,6 +10,7 @@
       <div class="text-sm text-gray-600">{{ currentTime }}</div>
     </div>
   </div>
+
   
 
   <br>
@@ -51,13 +52,18 @@
     </div>
   </div>
 
-
+  <br>
+  <MainHomeTable />
 
 </template>
 <script>
 import axios from 'axios';
+import MainHomeTable from './MainHomeTable.vue';
 
 export default {
+  components: {
+    MainHomeTable
+  },
   data() {
     return {
       rooms: [],

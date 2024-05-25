@@ -1,16 +1,15 @@
 <template>
-  <div class="about-us-section p-6">
-    <h1 class="text-3xl font-bold text-center mb-4">About Us</h1>
-    <p class="text-lg text-gray-700">
-      Welcome to our application, a cutting-edge solution designed and developed with dedication by <strong>Akram Ben Fekih</strong>. 
-      Our app aims to streamline operations and enhance user engagement through intuitive design and robust functionality.
+  <div class="about-us-section p-8 bg-white rounded-lg shadow-lg">
+    <h1 class="text-5xl font-bold text-center mb-8 text-gray-800">About Us</h1>
+    <p class="text-lg leading-relaxed mb-6">
+      Welcome to our application, crafted by <strong>Akram Ben Fekih</strong>. 
+      This application is designed to optimize operations and elevate user engagement through its intuitive interface.
     </p>
-    <p class="text-lg text-gray-700 mt-4">
-      We are proudly part of <strong>LEONI</strong>, a company committed to innovation and excellence in the tech industry. 
-      At LEONI, we believe in creating value through technology, and this application is a testament to our commitment.
+    <p class="text-lg leading-relaxed mb-6">
+      to serve <strong>LEONI</strong>, a leader in technological innovation and excellence. 
     </p>
-    <p class="text-lg text-gray-700 mt-4">
-      Thank you for choosing our application. We look forward to supporting your journey and continuing to deliver exceptional solutions.
+    <p class="text-lg leading-relaxed">
+      We appreciate your decision to utilize our application. We are committed to your success and to providing outstanding solutions continuously.
     </p>
   </div>
 </template>

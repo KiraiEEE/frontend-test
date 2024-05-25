@@ -6,48 +6,52 @@
       <input type="checkbox" id="notifyEmail" v-model="settings.notifyEmail" class="toggle-checkbox">
       <span class="ml-2 text-gray-600">Enable email notifications</span>
     </div>
-    <div class="setting-item mb-4">
-      <label for="themeColor" class="block text-gray-800 font-bold mb-2">Theme Color</label>
-      <select id="themeColor" v-model="settings.themeColor" class="form-select block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm">
-        <option value="blue">Blue</option>
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-      </select>
-    </div>
-    <div class="setting-item mb-4">
-      <label for="language" class="block text-gray-800 font-bold mb-2">Language</label>
-      <select id="language" v-model="settings.language" class="form-select block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm">
-        <option value="en">English</option>
-        <option value="fr">French</option>
-        <option value="es">Spanish</option>
-      </select>
-    </div>
+
     <div class="setting-item mb-4">
       <label for="serverUrl" class="block text-gray-800 font-bold mb-2">Backend Server URL</label>
-      <input type="text" id="serverUrl" v-model="settings.serverUrl" class="form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm" placeholder="https://api.example.com:3000">
+      <input type="text" id="serverUrl" v-model="settings.serverUrl" class="form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm" placeholder="Enter server URL">
     </div>
     <button @click="saveSettings" class="mt-4 border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
       Save Changes
     </button>
+    <NotifMsgBox ref="notifMsgBox" :show="notifMsgBoxShow" :message="notifMsgBoxMessage" :type="notifMsgBoxType" @hide="handleNotifMsgBoxHide"/>
   </div>
 </template>
 
 <script>
+import NotifMsgBox from './NotifMsgBox.vue';
+
 export default {
+  components: {
+    NotifMsgBox
+  },
   data() {
     return {
       settings: {
         notifyEmail: false,
+        serverUrl: localStorage.getItem('backendUrl') || '',
         themeColor: 'blue',
         language: 'en'
-      }
+      },
+      notifMsgBoxShow: false,
+      notifMsgBoxMessage: '',
+      notifMsgBoxType: 'success'
     };
   },
   methods: {
     saveSettings() {
       // Here you would typically make an API call to save the settings
       console.log('Settings saved:', this.settings);
-      alert('Settings have been saved successfully!');
+      localStorage.setItem('backendUrl', this.settings.serverUrl);
+      this.showNotifMsgBox('Settings have been saved successfully!', 'success');
+    },
+    showNotifMsgBox(message, type) {
+      this.notifMsgBoxMessage = message;
+      this.notifMsgBoxType = type;
+      this.notifMsgBoxShow = true;
+    },
+    handleNotifMsgBoxHide() {
+      this.notifMsgBoxShow = false;
     }
   }
 };

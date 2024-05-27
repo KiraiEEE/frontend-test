@@ -85,6 +85,7 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem('userId');
+      localStorage.removeItem('role');
       window.location.reload();
     },
     toggleSidebar() {

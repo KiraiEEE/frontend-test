@@ -84,6 +84,7 @@
                 <i class="fas fa-edit"></i> Edit
               </button>
               <button
+                v-if="userRole === 'superadmin'"
                 @click="showDeleteConfirmation(item.equipmentID)"
                 class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
               >
@@ -161,6 +162,7 @@
         showDeleteModal: false,
         currentEquipmentID: null,
         backendUrl: localStorage.getItem('backendUrl') || 'http://localhost:3000', // Default to localhost if not set
+        userRole: localStorage.getItem('role') || 'user', // Default to user if not set
       };
     },
     created() {

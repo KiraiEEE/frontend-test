@@ -1,5 +1,5 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./asset/animate.min.css" />
 
   <div class="checklist-manager bg-white p-6 rounded-lg shadow-lg">
     <div class="mb-8">
@@ -52,6 +52,7 @@
                 <i class="fas fa-edit"></i> Edit
               </button>
               <button
+                v-if="role === 'superadmin'"
                 @click="showDeleteConfirmation(item.checklistId)"
                 class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
               >
@@ -107,11 +108,13 @@
         isEditing: false,
         showDeleteModal: false,
         currentChecklistId: null,
-        backendUrl: ''
+        backendUrl: '',
+        role: ''
       };
     },
     created() {
       this.backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
+      this.role = localStorage.getItem('role') || '';
       this.fetchChecklists();
     },
     methods: {

@@ -3,7 +3,9 @@
     <ul class="py-6 space-y-4">
       <SidebarItem title="Home" icon="home" link="/" />
       <SidebarGroup title="Structure & Resources" icon="building">
-        <SidebarItem title="Branches" icon="code-branch" link="/branches" />
+        <template v-if="isSuperAdmin">
+          <SidebarItem title="Branches" icon="code-branch" link="/branches" />
+        </template>
         <SidebarItem title="Rooms" icon="door-open" link="/rooms" />
         <SidebarItem title="Users" icon="users" link="/users" />
         <SidebarItem title="Equipments" icon="tools" link="/equipments" />
@@ -31,6 +33,11 @@ export default {
     SidebarItem,
     SidebarGroup,
   },
+  computed: {
+    isSuperAdmin() {
+      return localStorage.getItem('role') === 'superadmin';
+    }
+  }
 }
 </script>
 

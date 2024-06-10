@@ -1,5 +1,5 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./asset/animate.min.css" />
   
   <div class="room-manager bg-white p-6 rounded-lg shadow-lg">
     <div class="mb-8">
@@ -60,6 +60,7 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ getBranchName(item.branchID) }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-right">
               <button
+                v-if="isSuperAdmin || (isAdmin && item.branchID === userBranchID)"
                 @click="editRoom(item)"
                 :disabled="!item.roomName || !item.branchID"
                 class="edit-btn border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
@@ -68,6 +69,7 @@
                 <i class="fas fa-edit"></i> Edit
               </button>
               <button
+                v-if="isSuperAdmin"
                 @click="showDeleteConfirmation(item.roomID)"
                 class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
               >
@@ -114,7 +116,6 @@
     </transition>
   </div>
 </template>
-
   <script>
   import axios from 'axios';
   
@@ -134,13 +135,17 @@
         isEditing: false,
         showDeleteModal: false,
         currentRoomID: null,
-        backendUrl: ''
+        backendUrl: '',
+        isSuperAdmin: localStorage.getItem('role') === 'superadmin',
+        isAdmin: localStorage.getItem('role') === 'admin',
+        userBranchID: null
       };
     },
     created() {
       this.backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
       this.fetchRooms();
       this.fetchBranches();
+      this.fetchUserBranchID();
     },
     methods: {
       async fetchRooms() {
@@ -157,6 +162,15 @@
           this.branches = response.data;
         } catch (error) {
           console.error('Error fetching branches:', error);
+        }
+      },
+      async fetchUserBranchID() {
+        try {
+          const userId = localStorage.getItem('userId');
+          const response = await axios.get(`${this.backendUrl}/users/${userId}`);
+          this.userBranchID = response.data.branchID;
+        } catch (error) {
+          console.error('Error fetching user branch ID:', error);
         }
       },
       async createRoom() {

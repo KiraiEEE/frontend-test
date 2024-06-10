@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold text-left text-gray-800 mb-6">Profile Settings</h1>
     <div class="mx-auto w-full max-w-[550px]">
 
-      <form @submit.prevent="updateProfile">
+      <form @submit.prevent="updateProfile" enctype="multipart/form-data">
         <div class="-mx-3 flex flex-wrap">
           <div class="w-full px-3">
             <div class="mb-5">
@@ -29,7 +29,7 @@
               <input v-model="user.email" type="email" id="email" placeholder="Enter your email" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}">
             </div>
           </div>
-          <div class="w-full px-3">
+          <div class="w-full px-3" v-if="user.role === 'superadmin'">
             <div class="mb-5">
               <label for="branchID" class="block text-gray-800 font-bold mb-2">
                 Branch
@@ -45,6 +45,14 @@
                 New Password
               </label>
               <input v-model="user.password" type="password" id="password" placeholder="Enter new password" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
+            </div>
+          </div>
+          <div class="w-full px-3">
+            <div class="mb-5">
+              <label for="photoUpload" class="block text-gray-800 font-bold mb-2">
+                Update Photo
+              </label>
+              <input type="file" id="photoUpload" @change="handleFileUpload" accept="image/*" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
             </div>
           </div>
         </div>
@@ -74,9 +82,11 @@ export default {
         email: '',
         username: '',
         password: '',
-        branchID: ''
+        branchID: '',
+        role: ''
       },
       branches: [],
+      photo: null,
       showNotification: false,
       notificationMessage: '',
       notificationType: 'success' // Default notification type
@@ -112,6 +122,9 @@ export default {
         console.error('Failed to fetch branches:', error);
       }
     },
+    handleFileUpload(event) {
+      this.photo = event.target.files[0];
+    },
     async updateProfile() {
       const userId = localStorage.getItem('userId');
       const backendUrl = localStorage.getItem('backendUrl');
@@ -124,6 +137,27 @@ export default {
           this.showNotification = false;
         }, 3000);
         return;
+      }
+      const formData = new FormData();
+      if (this.photo) {
+        formData.append('image', this.photo);
+        try {
+          const uploadResponse = await axios.post(`${backendUrl}/upload`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          this.user.photo = uploadResponse.data.fileName;
+        } catch (error) {
+          console.error('Failed to upload photo:', error);
+          this.notificationMessage = 'Failed to upload photo: ' + error.message;
+          this.notificationType = 'warning';
+          this.showNotification = true;
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
+          return;
+        }
       }
       try {
         await axios.put(`${backendUrl}/users/${userId}`, this.user);

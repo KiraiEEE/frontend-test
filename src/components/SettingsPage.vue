@@ -44,7 +44,7 @@
               <label for="password" class="block text-gray-800 font-bold mb-2">
                 New Password
               </label>
-              <input v-model="user.password" type="password" id="password" placeholder="Enter new password" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
+              <input v-model="newPassword" type="password" id="password" placeholder="Enter new password" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent">
             </div>
           </div>
           <div class="w-full px-3">
@@ -66,6 +66,7 @@
   </div>
   <Notification v-if="showNotification" :message="notificationMessage" :show="showNotification" :type="notificationType" @hide="showNotification = false" />
 </template>
+
 <script>
 import axios from 'axios';
 import Notification from './NotifMsgBox.vue';
@@ -85,6 +86,7 @@ export default {
         branchID: '',
         role: ''
       },
+      newPassword: '', // Separate model for new password
       branches: [],
       photo: null,
       showNotification: false,
@@ -159,8 +161,16 @@ export default {
           return;
         }
       }
+      // Create a copy of the user object to avoid modifying the original
+      const updatedUser = { ...this.user };
+      // Only update password if new password is set
+      if (this.newPassword) {
+        updatedUser.password = this.newPassword;
+      } else {
+        delete updatedUser.password; // Remove password field if new password is not set
+      }
       try {
-        await axios.put(`${backendUrl}/users/${userId}`, this.user);
+        await axios.put(`${backendUrl}/users/${userId}`, updatedUser);
         this.notificationMessage = 'Profile updated successfully!';
         this.notificationType = 'success';
         this.showNotification = true;

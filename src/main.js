@@ -25,6 +25,8 @@ import AboutApp from './components/AboutApp.vue';
 import BranchManagement from './components/BranchManagement.vue';
 import RoomManagement from './components/RoomManagement.vue';
 import GeneralSettings from './components/GeneralSettings.vue';
+import ResetRoomStatus from './components/ResetRoomStatus.vue';
+import SingleChecklistPage from './components/SingleChecklistPage.vue';
 
 
 // Create a router instance
@@ -43,6 +45,11 @@ const router = createRouter({
     { path: '/branches', component: BranchManagement }, // Route for BranchManagement
     { path: '/rooms', component: RoomManagement }, // Route for RoomManagement
     { path: '/settings/general', component: GeneralSettings }, // Route for GeneralSettings
+    { path: '/reset-room-status', component: ResetRoomStatus }, // Route for ResetRoomStatus
+
+
+
+    { path: '/single-checklist', component: SingleChecklistPage }, // Route for SingleChecklistPage
   ]
 })
 

@@ -47,14 +47,13 @@
         <div class="flex items-center">
           <span class="h-3 w-3 bg-gray-500 rounded-full mr-2"></span>
           <p class="text-sm text-gray-800">Null</p>
+          <a v-if="isSuperAdmin" href="/reset-room-status" class="text-blue-500 text-xs ml-4">   reset</a>
         </div>
       </div>
     </div>
 
     <MainHomeTable />
   </div>
-
-
 
 </template>
 <script>
@@ -69,7 +68,8 @@ export default {
     return {
       rooms: [],
       currentDate: new Date().toLocaleDateString(),
-      currentTime: new Date().toLocaleTimeString()
+      currentTime: new Date().toLocaleTimeString(),
+      isSuperAdmin: localStorage.getItem('role') === 'superadmin'
     };
   },
   created() {

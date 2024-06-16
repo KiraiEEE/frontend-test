@@ -1,43 +1,43 @@
 <template>
-  <div class="done-tasks-report">
-    <h1 class="text-2xl font-bold text-center my-4">Done Tasks Report</h1>
-    <div class="flex justify-center my-4">
-      <input type="date" v-model="selectedDate" class="form-input px-4 py-2 border rounded">
-      <button @click="fetchDoneTasksByDate" class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Fetch Tasks
-      </button>
-    </div>
-    <div v-if="doneTasks.length > 0">
-      <table class="min-w-full table-auto">
+  <div class="done-tasks-manager bg-white p-6 rounded-lg shadow-lg">
+    <div v-if="doneTasks.length > 0" class="done-task-container">
+      <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
         <thead>
           <tr class="bg-gray-200">
-            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Task Name</th>
-            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Status</th>
-            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Problem</th>
-            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Solution</th>
-            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">User</th>
-            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Room</th>
-            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Photo</th>
-            <th v-if="isSuperAdmin" class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Actions</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Task/Equipment</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Date</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Photo</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Problem</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Solution</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">User</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Room</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="task in doneTasks" :key="task.id">
-            <td class="px-6 py-4 whitespace-nowrap">{{ task.name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span :class="{'bg-green-100 text-green-800': task.okay, 'bg-red-100 text-red-800': !task.okay}" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                <i :class="{'fas fa-check': task.okay, 'fas fa-exclamation-triangle': !task.okay}"></i>
-              </span>
+          <tr
+            v-for="item in doneTasks"
+            :key="item.doneTaskID"
+            class="bg-white border-b border-gray-200 hover:bg-gray-100 transition-colors duration-150"
+          >
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.taskOrEquipmentName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.date }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              <img :src="`/images/${item.photo}`" alt="Task Photo" class="w-20 h-20 object-cover rounded-md">
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ task.problem }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ task.solution }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ task.user.name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ task.room.name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <img :src="`/images/${task.photo}`" alt="Task Photo" class="h-10 w-10 rounded-full">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              <i :class="item.okay ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-circle text-red-500'"></i>
             </td>
-            <td v-if="isSuperAdmin" class="px-6 py-4 whitespace-nowrap">
-              <button @click="showDeleteConfirmation(task.id)" class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.problem }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.solution }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.username }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.roomName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-right">
+              <button
+                @click="showDeleteConfirmation(item.doneTaskID)"
+                class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
+              >
                 <i class="fas fa-trash-alt"></i> Delete
               </button>
             </td>
@@ -45,69 +45,99 @@
         </tbody>
       </table>
     </div>
-    <div v-else class="text-center text-gray-500">No tasks found for selected date.</div>
+    <transition name="bounceIn">
+      <div v-if="showDeleteModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg animate__animated animate__bounceIn">
+          <h3 class="text-lg font-bold mb-4">Delete Done Task</h3>
+          <p class="text-gray-800 mb-4">Are you sure you want to delete this done task?</p>
+          <div class="text-center">
+            <button @click="deleteDoneTask(currentDoneTaskID)" class="border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Confirm</button>
+            <button @click="showDeleteModal = false" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 
 export default {
   data() {
     return {
-      selectedDate: new Date().toISOString().substr(0, 10), // default today's date
       doneTasks: [],
-      isSuperAdmin: localStorage.getItem('role') === 'superadmin'
+      showDeleteModal: false,
+      currentDoneTaskID: null,
+      backendUrl: localStorage.getItem('backendUrl') || 'http://localhost:3000',
     };
   },
+  created() {
+    this.fetchDoneTasks();
+  },
   methods: {
-    async fetchDoneTasksByDate() {
+    async fetchDoneTasks() {
       try {
-        const backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
-        const response = await axios.get(`${backendUrl}/donetasks/date`, { params: { date: this.selectedDate } });
-        this.doneTasks = response.data.map(async task => {
-          const user = await axios.get(`${backendUrl}/users/${task.userID}`);
-          const room = await axios.get(`${backendUrl}/rooms/${task.roomID}`);
-          return {
-            ...task,
-            user: user.data,
-            room: room.data,
-            name: task.equipmentID ? (await axios.get(`${backendUrl}/equipments/${task.equipmentID}`)).data.name : (await axios.get(`${backendUrl}/tasks/${task.taskID}`)).data.name
-          };
-        });
+        const response = await axios.get(`${this.backendUrl}/donetasks`);
+        this.doneTasks = response.data.map(task => ({
+          ...task,
+          taskOrEquipmentName: task.taskID ? this.fetchTaskName(task.taskID) : this.fetchEquipmentName(task.equipmentID),
+          username: this.fetchUserName(task.userID),
+          roomName: this.fetchRoomName(task.roomID)
+        }));
       } catch (error) {
         console.error('Error fetching done tasks:', error);
-        this.doneTasks = [];
       }
     },
-    showDeleteConfirmation(taskId) {
-      if (confirm('Are you sure you want to delete this task?')) {
-        this.deleteDoneTask(taskId);
-      }
-    },
-    async deleteDoneTask(taskId) {
+    async fetchTaskName(taskID) {
       try {
-        const backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
-        await axios.delete(`${backendUrl}/donetasks/${taskId}`);
-        this.doneTasks = this.doneTasks.filter(task => task.id !== taskId);
+        const response = await axios.get(`${this.backendUrl}/tasks/${taskID}`);
+        return response.data.name;
+      } catch (error) {
+        console.error('Error fetching task name:', error);
+        return 'Unknown Task';
+      }
+    },
+    async fetchEquipmentName(equipmentID) {
+      try {
+        const response = await axios.get(`${this.backendUrl}/equipments/${equipmentID}`);
+        return response.data.name;
+      } catch (error) {
+        console.error('Error fetching equipment name:', error);
+        return 'Unknown Equipment';
+      }
+    },
+    async fetchUserName(userID) {
+      try {
+        const response = await axios.get(`${this.backendUrl}/users/${userID}`);
+        return response.data.username;
+      } catch (error) {
+        console.error('Error fetching user name:', error);
+        return 'Unknown User';
+      }
+    },
+    async fetchRoomName(roomID) {
+      try {
+        const response = await axios.get(`${this.backendUrl}/rooms/${roomID}`);
+        return response.data.name;
+      } catch (error) {
+        console.error('Error fetching room name:', error);
+        return 'Unknown Room';
+      }
+    },
+    async deleteDoneTask(doneTaskID) {
+      try {
+        await axios.delete(`${this.backendUrl}/donetasks/${doneTaskID}`);
+        this.doneTasks = this.doneTasks.filter(item => item.doneTaskID !== doneTaskID);
+        this.showDeleteModal = false;
       } catch (error) {
         console.error('Error deleting done task:', error);
       }
+    },
+    showDeleteConfirmation(doneTaskID) {
+      this.currentDoneTaskID = doneTaskID;
+      this.showDeleteModal = true;
     }
-  }
-}
+  },
+};
 </script>
 
-<style scoped>
-.done-tasks-report table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.done-tasks-report th, .done-tasks-report td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-.done-tasks-report th {
-  background-color: #f3f3f3;
-}
-</style>

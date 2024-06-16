@@ -111,7 +111,7 @@ export default {
       photo: null,
       showNotification: false,
       notificationMessage: '',
-      notificationType: 'success', // Default notification type
+      notificationType: 'success', 
       backendUrl: localStorage.getItem('backendUrl') || '',
       defaultBackendUrl: 'http://localhost:3000'
     };

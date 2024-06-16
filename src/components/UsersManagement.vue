@@ -122,7 +122,7 @@
             </select>
           </div>
           <div class="mb-4">
-            <label for="editUserEmail" class="block text-gray-800 font-bold mb-2">Email</label
+            <label for="editUserEmail" class="block text-gray-800 font-bold mb-2">Email</label>
             <input v-model="user.email" id="editUserEmail" placeholder="Enter email" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
           </div>
           <div class="mb-4">

@@ -19,8 +19,7 @@
           <tr
             v-for="item in doneTasks"
             :key="item.doneTaskID"
-            class="bg-white border-b border-gray-200 hover:bg-gray-100 transition-colors duration-150"
-          >
+            class="bg-white border-b border-gray-200 hover:bg-gray-100 transition-colors duration-150">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.taskID }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ formatDateTime(item.date) }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">

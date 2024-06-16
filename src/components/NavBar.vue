@@ -8,7 +8,7 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
-  <nav class="navbar flex justify-between items-center h-20 px-8 border border-gray-300">
+  <nav class="navbar flex justify-between items-center h-20 px-8 border border-gray-300" @click.self="closeMenus">
     <div class="flex items-center">
       <button @click="toggleSidebar" class="mr-4">
         <i class="fas fa-bars text-gray-600 text-lg"></i>
@@ -35,39 +35,48 @@
 
     <div class="flex items-center">
       <div class="relative group mr-4"> 
-        <button class="text-gray-600 text-lg focus:outline-none hover:text-gray-800 transition-colors duration-300">
+        <button @click.stop="toggleUserMenu" class="text-gray-600 text-lg focus:outline-none hover:text-gray-800 transition-colors duration-300">
            <img :src="userPhotoUrl" alt="User Avatar" class="flex-shrink-0 object-cover mx-1 rounded-full w-9 h-9 hover:opacity-75 transition-opacity duration-300">
         </button>
-        <div
-          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
-        >
-          <router-link
-            to="/settings"
-            class="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+        <transition name="fast-slide-fade">
+          <div
+            v-show="isUserMenuVisible"
+            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10"
+            @mouseleave="closeMenus"
           >
-            <i class="fas fa-cog mr-2"></i>Profile Settings
-          </router-link>
-          <router-link to="/about" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-            <i class="fas fa-info-circle mr-2"></i>About
-          </router-link>
-          <button @click="logout" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200">
-            <i class="fas fa-sign-out-alt mr-2"></i>Logout
-          </button>
-        </div>
+            <router-link
+              to="/settings"
+              class="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+            >
+              <i class="fas fa-cog mr-2"></i>Profile Settings
+            </router-link>
+            <router-link to="/about" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+              <i class="fas fa-info-circle mr-2"></i>About
+            </router-link>
+            <button @click="logout" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200">
+              <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+          </div>
+        </transition>
+
       </div>
 
       <div class="relative group">
-        <button class="text-gray-600 text-lg focus:outline-none hover:text-gray-800 transition-colors duration-300">
+        <button @click.stop="toggleNotificationsMenu" class="text-gray-600 text-lg focus:outline-none hover:text-gray-800 transition-colors duration-300">
           <i class="fas fa-bell fa-lg"></i>
         </button>
-        <div
-          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10 invisible group-hover:visible group-focus:visible transition-opacity duration-300 ease-in-out"
-        >
-          <p class="px-4 py-2 text-gray-800">Notifications</p>
-          <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-            See All Notifications
-          </a>
-        </div>
+        <transition name="fast-slide-fade">
+          <div
+            v-show="isNotificationsMenuVisible"
+            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-10"
+            @mouseleave="closeMenus"
+          >
+            <p class="px-4 py-2 text-gray-800">Notifications</p>
+            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+              See All Notifications
+            </a>
+          </div>
+        </transition>
       </div>
     </div>
   </nav>
@@ -80,6 +89,8 @@ export default {
   data() {
     return {
       userPhotoUrl: '',
+      isUserMenuVisible: false,
+      isNotificationsMenuVisible: false,
     };
   },
   methods: {
@@ -90,6 +101,18 @@ export default {
     },
     toggleSidebar() {
       this.$emit('toggle-sidebar');
+    },
+    toggleUserMenu() {
+      this.isUserMenuVisible = !this.isUserMenuVisible;
+      this.isNotificationsMenuVisible = false; // Close notifications menu when user menu is toggled
+    },
+    toggleNotificationsMenu() {
+      this.isNotificationsMenuVisible = !this.isNotificationsMenuVisible;
+      this.isUserMenuVisible = false; // Close user menu when notifications menu is toggled
+    },
+    closeMenus() {
+      this.isUserMenuVisible = false;
+      this.isNotificationsMenuVisible = false;
     },
     fetchUserPhoto() {
       const userId = localStorage.getItem('userId');
@@ -109,3 +132,13 @@ export default {
   }
 };
 </script>
+
+<style>
+.fast-slide-fade-enter-active, .fast-slide-fade-leave-active {
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+.fast-slide-fade-enter, .fast-slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>

@@ -12,9 +12,7 @@
             <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Solution</th>
             <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">User</th>
             <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Room</th>
-            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 text-right">
-              
-            </th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 text-right"></th>
           </tr>
         </thead>
         <tbody>

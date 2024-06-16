@@ -26,7 +26,7 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.taskID }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ formatDateTime(item.date) }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              <img :src="`${backendUrl}/images/${item.photo}`" alt="Task Photo" class="w-20 h-20 object-cover rounded-md">
+              <img :src="`${backendUrl}/images/${item.photo}`" alt="Task Photo" class="w-20 h-20 object-cover rounded-md cursor-pointer" @click="showImage(item.photo)">
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
               <i :class="item.okay ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-circle text-red-500'"></i>
@@ -59,6 +59,12 @@
         </div>
       </div>
     </transition>
+    <transition name="pop">
+      <div v-if="showImageModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50">
+        <img :src="`${backendUrl}/images/${currentImage}`" alt="Expanded Task Photo" class="max-w-full max-h-full p-4 animate__animated animate__zoomIn">
+        <button @click="showImageModal = false" class="absolute top-0 right-0 m-4 text-white text-3xl">&times;</button>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -69,7 +75,9 @@ export default {
     return {
       doneTasks: [],
       showDeleteModal: false,
+      showImageModal: false,
       currentDoneTaskID: null,
+      currentImage: '',
       backendUrl: localStorage.getItem('backendUrl') || 'http://localhost:3000',
     };
   },
@@ -129,6 +137,10 @@ export default {
     showDeleteConfirmation(doneTaskID) {
       this.currentDoneTaskID = doneTaskID;
       this.showDeleteModal = true;
+    },
+    showImage(photo) {
+      this.currentImage = photo;
+      this.showImageModal = true;
     },
     formatDateTime(dateTime) {
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };

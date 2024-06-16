@@ -28,8 +28,22 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
               <i :class="item.okay ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-circle text-red-500'"></i>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.problem }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.solution }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              <template v-if="item.problem">
+                {{ item.problem }}
+              </template>
+              <template v-else>
+                <i class="fas fa-times-circle text-gray-400"></i>
+              </template>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              <template v-if="item.solution">
+                {{ item.solution }}
+              </template>
+              <template v-else>
+                <i class="fas fa-times-circle text-gray-400"></i>
+              </template>
+            </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.userID }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.roomID }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-right">

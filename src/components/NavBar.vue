@@ -1,5 +1,3 @@
-<!-- NavBar.vue -->
-
 <template>
   <link
     rel="stylesheet"

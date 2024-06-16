@@ -1,6 +1,5 @@
 <template>
   <link rel="stylesheet" href="./asset/animate.min.css" />
-
   <div class="checklist-manager bg-white p-6 rounded-lg shadow-lg">
     <div class="mb-8">
       <div class="flex gap-3">

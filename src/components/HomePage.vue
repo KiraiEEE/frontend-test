@@ -1,4 +1,3 @@
-<!-- HomePage.vue -->
 <template>
 
   <div class="p-8 bg-white rounded-lg shadow-lg">

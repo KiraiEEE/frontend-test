@@ -7,7 +7,6 @@
             <img src="@/assets/logo.png" alt="logo" />
           </div>
         </div>
-        <!-- Backend URL Input -->
         <div class="mb-4">
           <label for="backendUrl" class="block text-gray-600">Backend URL</label>
           <input type="text" id="backendUrl" v-model="backendUrl" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" :placeholder="defaultBackendUrl">
@@ -26,7 +25,6 @@
             <input type="text" id="cin" v-model="cin" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
           </div>
         </div>
-        <!-- Role and Email Selection -->
         <div class="flex justify-between gap-3">
           <div class="w-1/2">
             <label for="role" class="block text-gray-600">Role</label>
@@ -41,7 +39,6 @@
             <input type="email" id="email" v-model="email" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
           </div>
         </div>
-        <!-- Password and Confirm Password next to each other -->
         <div class="flex justify-between gap-3">
           <div class="w-1/2">
             <label for="password" class="block text-gray-600">Password</label>
@@ -52,7 +49,6 @@
             <input type="password" id="confirmPassword" v-model="confirmPassword" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
           </div>
         </div>
-        <!-- Branch ID Selection and Photo Upload -->
         <div class="flex justify-between gap-3 mb-6">
           <div class="w-1/2">
             <label for="branchID" class="block text-gray-600">Branch</label>
@@ -65,7 +61,6 @@
             <input type="file" id="photoUpload" @change="handleFileUpload" accept="image/*" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" required>
           </div>
         </div>
-        <!-- Sign Up Button -->
         <div class="flex justify-center items-center">
           <button type="submit" class="relative inline-flex items-center justify-start py-3 pl-4 pr-12 overflow-hidden font-semibold text-indigo-600 transition-all duration-150 ease-in-out rounded hover:pl-10 hover:pr-6 bg-gray-50 group">
             <span class="absolute bottom-0 left-0 w-full h-1 transition-all duration-150 ease-in-out bg-indigo-600 group-hover:h-full"></span>

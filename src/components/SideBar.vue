@@ -11,6 +11,7 @@
         <SidebarItem title="Equipments" icon="tools" link="/equipments" />
       </SidebarGroup>
       <SidebarGroup title="Checklists" icon="check-square">
+        <SidebarItem title="Done Tasks" icon="check-circle" link="/single-checklist" />
         <SidebarItem title="Tasks Editor" icon="edit" link="/customize" />
         <SidebarItem title="Checklists Editor" icon="tasks" link="/checklist" />
         <SidebarItem title="Documentations" icon="file-alt" link="/documentations" />

@@ -7,9 +7,9 @@
         enter-active-class="animate-slide-in"
         leave-active-class="animate-slide-out"
       >
-        <SideBar v-if="sidebarOpen" :selectedItem="selectedItem" @updateSelectedItem="updateSelectedItem" class="w-64 sticky top-0" />
+        <SideBar v-if="sidebarOpen" :selectedItem="selectedItem" @updateSelectedItem="updateSelectedItem" class="w-64 h-screen sticky top-0" />
       </transition>
-      <div class="flex-grow bg-gray-50 p-4 transition-all duration-300 ease-in-out">
+      <div class="flex-grow bg-gray-50 p-4 transition-all duration-300 ease-in-out h-screen">
         <router-view></router-view>
       </div>
     </div>
@@ -72,6 +72,7 @@ export default {
 /* Improved sidebar styling */
 .SideBar {
   width: 256px; /* Fixed width for better control */
+  height: 100vh; /* Full viewport height */
   background-color: #f3f4f6; /* Lighter background for better contrast */
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   z-index: 1000; /* Ensures sidebar is above other content */

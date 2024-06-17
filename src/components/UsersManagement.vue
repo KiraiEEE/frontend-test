@@ -48,7 +48,7 @@
                 @click="assignRole(item, 'user')"
                 class="ml-2 border border-green-500 text-green-500 font-bold py-2 px-4 rounded-full hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
               >
-                Accept as User
+                Validate User
               </button>
               <button
                 v-if="isSuperAdmin"

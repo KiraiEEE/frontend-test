@@ -1,5 +1,5 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./asset/animate.min.css" />
   
   <div class="user-manager bg-white p-6 rounded-lg shadow-lg">
     <div class="mb-8 text-center">
@@ -45,7 +45,7 @@
               </button>
               <button
                 v-if="item.role === null"
-                @click="assignRole(item, 'User')"
+                @click="assignRole(item, 'user')"
                 class="ml-2 border border-green-500 text-green-500 font-bold py-2 px-4 rounded-full hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
               >
                 Accept as User
@@ -163,7 +163,7 @@ export default {
   data() {
     return {
       users: [],
-      roles: ['Admin', 'User', 'Guest'],
+      roles: ['user', 'admin', 'superadmin'],
       user: {
         username: '',
         name: '',
@@ -261,9 +261,15 @@ export default {
     resetNewUser() {
       this.newUser = { username: '', name: '', role: '', email: '', branchID: '', photo: '' };
     },
-    assignRole(user, role) {
+    async assignRole(user, role) {
       user.role = role;
-      this.updateUser();
+      try {
+        await axios.put(`${this.backendUrl}/users/${user.userID}`, { role });
+        const index = this.users.findIndex(item => item.userID === user.userID);
+        this.users[index].role = role;
+      } catch (error) {
+        console.error('Error assigning role:', error);
+      }
     }
   },
 };

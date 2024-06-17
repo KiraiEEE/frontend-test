@@ -71,7 +71,7 @@
       </div>
     </transition>
     <transition name="pop">
-      <div v-if="showImageModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50">
+      <div v-if="showImageModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50" @click.self="showImageModal = false">
         <img :src="`${backendUrl}/images/${currentImage}`" alt="Expanded Task Photo" class="max-w-full max-h-full p-4 animate__animated animate__zoomIn">
         <button @click="showImageModal = false" class="absolute top-0 right-0 m-4 text-white text-3xl">&times;</button>
       </div>

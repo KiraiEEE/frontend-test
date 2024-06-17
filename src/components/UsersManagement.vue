@@ -11,7 +11,6 @@
       </button>
     </div>
 
-    
     <div v-if="users.length > 0" class="user-container">
       <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
         <thead>

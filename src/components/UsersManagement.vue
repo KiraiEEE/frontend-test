@@ -170,7 +170,8 @@ export default {
         role: '',
         email: '',
         branchID: '',
-        photo: ''
+        photo: '',
+        
       },
       newUser: {
         username: '',
@@ -207,7 +208,7 @@ export default {
       try {
         const response = await axios.get(`${this.backendUrl}/branches`);
         this.branches = response.data.reduce((acc, branch) => {
-          acc[branch.id] = branch.name;
+          acc[branch.branchID] = branch.branchName;
           return acc;
         }, {});
       } catch (error) {

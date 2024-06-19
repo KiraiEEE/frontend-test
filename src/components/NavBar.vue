@@ -21,14 +21,17 @@
     </div>
 
     <div class="search relative w-full md:w-auto mr-4">
-      <input
-        type="text"
-        placeholder="Search"
-        class="w-full bg-transparent px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-indigo-500 text-gray-700 transition duration-300 ease-in-out"
-      />
-      <button class="absolute right-0 top-0 mt-2 mr-2">
-        <i class="fas fa-search text-gray-600 text-lg"></i>
-      </button>
+      <form @submit.prevent="submitSearch">
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search"
+          class="w-full bg-transparent px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-indigo-500 text-gray-700 transition duration-300 ease-in-out"
+        />
+        <button type="submit" class="absolute right-0 top-0 mt-2 mr-2">
+          <i class="fas fa-search text-gray-600 text-lg"></i>
+        </button>
+      </form>
     </div>
 
     <div class="flex items-center">
@@ -70,9 +73,12 @@
             @mouseleave="closeMenus"
           >
             <p class="px-4 py-2 text-gray-800">Notifications</p>
-            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-              See All Notifications
-            </a>
+            <div class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+              MAIN-LTN-3 is <span class="text-red-500 font-bold">undone</span>
+            </div>
+            <div class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+              BACKUP-LTN-3 is <span class="text-green-500 font-bold">done</span>
+            </div>
           </div>
         </transition>
       </div>
@@ -89,6 +95,8 @@ export default {
       userPhotoUrl: '',
       isUserMenuVisible: false,
       isNotificationsMenuVisible: false,
+      userRooms: [],
+      searchQuery: ''
     };
   },
   methods: {
@@ -107,6 +115,7 @@ export default {
     toggleNotificationsMenu() {
       this.isNotificationsMenuVisible = !this.isNotificationsMenuVisible;
       this.isUserMenuVisible = false; // Close user menu when notifications menu is toggled
+      this.fetchUserRooms();
     },
     closeMenus() {
       this.isUserMenuVisible = false;
@@ -123,6 +132,20 @@ export default {
         .catch(error => {
           console.error('Error fetching user photo:', error);
         });
+    },
+    fetchUserRooms() {
+      const userId = localStorage.getItem('userId');
+      const backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
+      axios.get(`${backendUrl}/userrooms/${userId}`)
+        .then(response => {
+          this.userRooms = response.data.rooms;
+        })
+        .catch(error => {
+          console.error('Error fetching user rooms:', error);
+        });
+    },
+    submitSearch() {
+      this.$router.push({ path: '/search', query: { q: this.searchQuery } });
     }
   },
   created() {

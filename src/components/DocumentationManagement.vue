@@ -3,6 +3,9 @@
 
 <div class="documentation-manager bg-white p-6 rounded-lg shadow-lg">
   <div class="mb-8">
+    <div class="text-center text-red-600 font-bold mb-4">
+      This is an experimental page and should have future updates.
+    </div>
     <div class="flex gap-3">
       <div class="w-1/2">
         <label for="documentName" class="block text-gray-800 font-bold mb-2">Add New Document</label>

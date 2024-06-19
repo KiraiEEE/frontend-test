@@ -1,25 +1,68 @@
 <template>
-  <div class="search-page">
-    <div class="search-bar-container">
-      <input
-        v-model="searchQuery"
-        @keyup.enter="performSearch"
-        type="text"
-        placeholder="Search..."
-        class="search-input"
-      />
-      <button @click="performSearch" class="search-button">
-        <i class="fas fa-search"></i>
-      </button>
+  <div class="search-results bg-white p-6 rounded-lg shadow-lg">
+    <div v-if="filteredDoneTasks.length > 0" class="done-task-container">
+      <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">DoneTask</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Date</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Photo</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Problem</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Solution</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">User</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700">Room</th>
+            <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 text-right"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="item in filteredDoneTasks"
+            :key="item.doneTaskID"
+            class="bg-white border-b border-gray-200 hover:bg-gray-100 transition-colors duration-150">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.taskName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ formatDateTime(item.date) }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              <img :src="`${backendUrl}/images/${item.photo}`" alt="Task Photo" class="w-20 h-20 object-cover rounded-md cursor-pointer" @click="showImage(item.photo)">
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              <span class="flex items-center">
+                <i :class="item.okay ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-circle text-red-500'"></i>
+                <span class="ml-2">{{ item.okay ? 'OK' : 'Issue' }}</span>
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              <template v-if="item.problem">
+                {{ item.problem }}
+              </template>
+              <template v-else>
+                <span>ø</span>
+              </template>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              <template v-if="item.solution">
+                {{ item.solution }}
+              </template>
+              <template v-else>
+                <span>ø</span>
+              </template>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.username }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.roomName || 'Unknown Room' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-right">
+              <button
+                @click="showDeleteConfirmation(item.doneTaskID)"
+                class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="search-results">
-      <div v-if="loading" class="loading">Loading...</div>
-      <div v-if="!loading && results.length === 0" class="no-results">No results found.</div>
-      <ul v-if="!loading && results.length > 0">
-        <li v-for="result in results" :key="result.id" class="search-result-item">
-          {{ result.name }}
-        </li>
-      </ul>
+    <div v-else class="text-center text-gray-700">
+      <p>No tasks found matching the search criteria.</p>
     </div>
   </div>
 </template>
@@ -30,74 +73,39 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      searchQuery: '',
-      results: [],
-      loading: false
+      searchQuery: this.$route.query.q || '',
+      doneTasks: [],
+      filteredDoneTasks: [],
+      backendUrl: localStorage.getItem('backendUrl') || 'http://localhost:3000',
     };
   },
+  watch: {
+    searchQuery(newQuery, oldQuery) {
+      if (newQuery !== oldQuery) {
+        this.filterTasks();
+      }
+    }
+  },
   methods: {
-    performSearch() {
-      this.loading = true;
-      const backendUrl = localStorage.getItem('backendUrl') || 'http://localhost:3000';
-      axios.get(`${backendUrl}/search`, { params: { query: this.searchQuery } })
+    fetchDoneTasks() {
+      axios.get(`${this.backendUrl}/donetasks`)
         .then(response => {
-          this.results = response.data;
-          this.loading = false;
+          this.doneTasks = response.data;
+          this.filterTasks();
         })
         .catch(error => {
-          console.error('Error during search:', error);
-          this.loading = false;
+          console.error('Error fetching done tasks:', error);
         });
+    },
+    filterTasks() {
+      this.filteredDoneTasks = this.doneTasks.filter(task =>
+        task.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        task.roomName.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
     }
+  },
+  created() {
+    this.fetchDoneTasks();
   }
-}
+};
 </script>
-
-<style scoped>
-.search-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-}
-
-.search-bar-container {
-  display: flex;
-  width: 100%;
-  max-width: 600px;
-}
-
-.search-input {
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px 0 0 4px;
-}
-
-.search-button {
-  padding: 10px;
-  background-color: #007BFF;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 0 4px 4px 0;
-}
-
-.search-button i {
-  font-size: 16px;
-}
-
-.loading {
-  margin-top: 20px;
-}
-
-.no-results {
-  margin-top: 20px;
-}
-
-.search-result-item {
-  list-style: none;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-}
-</style>

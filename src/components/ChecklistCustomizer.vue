@@ -2,33 +2,33 @@
   <link rel="stylesheet" href="./asset/animate.min.css" />
 
 <div class="task-manager bg-white p-6 rounded-lg shadow-lg">
-  <div class="mb-8">
-    <div class="flex gap-3">
-      <div class="w-1/2">
-        <label for="checklistSelect" class="block text-gray-800 font-bold mb-2">Select Checklist</label>
-        <select
-          v-model="selectedChecklistID"
-          id="checklistSelect"
-          class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
-          @change="fetchTasks"
-          required
-        >
-          <option v-for="checklist in checklists" :value="checklist.checklistID" :key="checklist.checklistID">
-            {{ checklist.checklistType }}
-          </option>
-        </select>
-      </div>
-    </div>
-    <div class="mt-6 text-center">
-      <button
-        @click="showTaskModal()"
-        class="border border-violet-600 text-violet-600 font-bold py-2 px-4 rounded-full hover:bg-violet-600 hover:text-white transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-50"
+  <div class="mb-8 flex justify-center">
+    <div class="w-1/3">
+      <label for="checklistSelect" class="block text-gray-800 font-bold mb-2 text-center">Select Checklist</label>
+      <select
+        v-model="selectedChecklistID"
+        id="checklistSelect"
+        class="block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+        @change="fetchTasks"
+        required
       >
-        Add Task
-      </button>
+        <option value="" disabled selected>Select Checklist</option>
+        <option v-for="checklist in checklists" :value="checklist.checklistID" :key="checklist.checklistID">
+          {{ checklist.checklistType }}
+        </option>
+      </select>
     </div>
   </div>
-
+  <div class="mt-6 flex justify-center">
+    <button
+      @click="showTaskModal()"
+      class="border border-violet-600 text-violet-600 font-bold py-2 px-4 rounded-full hover:bg-violet-600 hover:text-white transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-50"
+    >
+      Add Task
+    </button>
+    
+  </div>
+  <br>
   <div v-if="tasks.length > 0" class="task-container">
     <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
       <thead>
@@ -75,6 +75,7 @@
       <div class="mb-4">
         <label for="checklistSelectModal" class="block text-gray-800 font-bold mb-2">Select Checklist</label>
         <select v-model="newTask.checklistID" id="checklistSelectModal" class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+          <option value="" disabled selected>Select Checklist</option>
           <option v-for="checklist in checklists" :value="checklist.checklistID" :key="checklist.checklistID">
             {{ checklist.checklistType }}
           </option>
@@ -88,6 +89,8 @@
   </div>
 </transition>
 </template>
+
+
 <script>
 import axios from 'axios';
 
@@ -118,7 +121,6 @@ export default {
       try {
         const response = await axios.get(`${this.backendUrl}/checklists`);
         this.checklists = response.data;
-        this.selectedChecklistID = this.checklists[0].checklistID;
       } catch (error) {
         console.error('Error fetching checklists:', error);
       }

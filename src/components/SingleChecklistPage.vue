@@ -1,6 +1,10 @@
 <template>
   <div class="done-tasks-manager bg-white p-6 rounded-lg shadow-lg">
-    <div v-if="doneTasks.length > 0" class="done-task-container">
+    <div class="text-center">
+      <label for="selectedDate" class="font-bold mr-2">Day:</label>
+      <input type="date" id="selectedDate" v-model="selectedDate" class="border border-gray-300 p-2 rounded-lg">
+    </div><br>
+    <div v-if="filteredDoneTasks.length > 0" class="done-task-container">
       <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
         <thead>
           <tr class="bg-gray-200">
@@ -17,7 +21,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="item in doneTasks"
+            v-for="item in filteredDoneTasks"
             :key="item.doneTaskID"
             class="bg-white border-b border-gray-200 hover:bg-gray-100 transition-colors duration-150">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.taskName }}</td>
@@ -26,14 +30,17 @@
               <img :src="`${backendUrl}/images/${item.photo}`" alt="Task Photo" class="w-20 h-20 object-cover rounded-md cursor-pointer" @click="showImage(item.photo)">
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              <i :class="item.okay ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-circle text-red-500'"></i>
+              <span class="flex items-center">
+                <i :class="item.okay ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-circle text-red-500'"></i>
+                <span class="ml-2">{{ item.okay ? 'OK' : 'Issue' }}</span>
+              </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
               <template v-if="item.problem">
                 {{ item.problem }}
               </template>
               <template v-else>
-                <i class="fas fa-times-circle text-gray-400"></i>
+                <span>ø</span>
               </template>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
@@ -41,11 +48,11 @@
                 {{ item.solution }}
               </template>
               <template v-else>
-                <i class="fas fa-times-circle text-gray-400"></i>
+                <span>ø</span>
               </template>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.username }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.roomName }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ item.roomName || 'Unknown Room' }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-right">
               <button
                 @click="showDeleteConfirmation(item.doneTaskID)"
@@ -78,6 +85,7 @@
     </transition>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 
@@ -90,7 +98,13 @@ export default {
       currentDoneTaskID: null,
       currentImage: '',
       backendUrl: localStorage.getItem('backendUrl') || 'http://localhost:3000',
+      selectedDate: new Date().toISOString().substr(0, 10), // Default to today's date
     };
+  },
+  computed: {
+    filteredDoneTasks() {
+      return this.doneTasks.filter(task => this.formatDate(task.date) === this.selectedDate);
+    }
   },
   created() {
     this.fetchDoneTasks();
@@ -99,29 +113,40 @@ export default {
     async fetchDoneTasks() {
       try {
         const response = await axios.get(`${this.backendUrl}/donetasks`);
-        this.doneTasks = await Promise.all(response.data.map(async task => ({
-          ...task,
-          taskName: await this.fetchTaskName(task.taskID),
-          username: await this.fetchUserName(task.userID),
-          roomName: await this.fetchRoomName(task.roomID)
-        })));
+        const tasksWithDetails = await Promise.all(response.data.map(async task => {
+          const taskName = await this.fetchTaskName(task.taskID,task.equipmentID);
+          const username = await this.fetchUserName(task.userID);
+          const roomName = await this.fetchRoomName(task.roomID) || 'Unknown Room';
+          return { ...task, taskName, username, roomName };
+        }));
+        this.doneTasks = tasksWithDetails;
+        console.log('Fetched Done Tasks:', this.doneTasks); // Log fetched tasks for debugging
       } catch (error) {
         console.error('Error fetching done tasks:', error);
       }
     },
-    async fetchTaskName(taskID) {
+    async fetchTaskName(taskID, equipmentID) {
       try {
-        const response = await axios.get(`${this.backendUrl}/tasks/${taskID}`);
-        return response.data.name;
+        let response;
+        if (taskID) {
+          response = await axios.get(`${this.backendUrl}/tasks/${taskID}`);
+          console.log('Task Name Response:', response.data); // Log the response data
+          return response.data.taskTitle;
+        } else if (equipmentID) {
+          response = await axios.get(`${this.backendUrl}/equipments/${equipmentID}`);
+          console.log('Equipment Name Response:', response.data); // Log the response data
+          return response.data.equipmentName;
+        }
+        return 'No Task or Equipment ID provided';
       } catch (error) {
-        console.error('Error fetching task name:', error);
-        return 'Unknown Task';
+        console.error('Error fetching task or equipment name:', error);
+        return 'Name Unavailable';
       }
     },
     async fetchUserName(userID) {
       try {
         const response = await axios.get(`${this.backendUrl}/users/${userID}`);
-        return response.data.username;
+        return response.data.username || 'Unknown User';
       } catch (error) {
         console.error('Error fetching user name:', error);
         return 'Unknown User';
@@ -130,7 +155,8 @@ export default {
     async fetchRoomName(roomID) {
       try {
         const response = await axios.get(`${this.backendUrl}/rooms/${roomID}`);
-        return response.data.name;
+        console.log('Room Name Response:', response.data); // Log the response data
+        return response.data.roomName || 'Unknown Room';
       } catch (error) {
         console.error('Error fetching room name:', error);
         return 'Unknown Room';
@@ -156,6 +182,9 @@ export default {
     formatDateTime(dateTime) {
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
       return new Date(dateTime).toLocaleDateString(undefined, options);
+    },
+    formatDate(date) {
+      return new Date(date).toISOString().substr(0, 10);
     }
   },
 };

@@ -27,6 +27,7 @@ import RoomManagement from './components/RoomManagement.vue';
 import GeneralSettings from './components/GeneralSettings.vue';
 import ResetRoomStatus from './components/ResetRoomStatus.vue';
 import SingleChecklistPage from './components/SingleChecklistPage.vue';
+import SearchPage from './components/SearchPage.vue';
 
 
 // Create a router instance
@@ -49,7 +50,8 @@ const router = createRouter({
 
 
 
-    { path: '/single-checklist', component: SingleChecklistPage }, // Route for SingleChecklistPage
+    { path: '/single-checklist', component: SingleChecklistPage }, 
+    { path: '/search', component: SearchPage }
   ]
 })
 

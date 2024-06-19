@@ -1,5 +1,4 @@
 <template>
-
   <div class="p-8 bg-white rounded-lg shadow-lg">
 
     <div class="mb-8 flex items-center justify-center space-x-3">

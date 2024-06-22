@@ -1,5 +1,5 @@
 <template>
-  <div class="search-results bg-white p-6 rounded-lg shadow-lg">
+  <div class="done-tasks-manager bg-white p-6 rounded-lg shadow-lg">
     <div v-if="filteredDoneTasks.length > 0" class="done-task-container">
       <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
         <thead>
@@ -61,9 +61,24 @@
         </tbody>
       </table>
     </div>
-    <div v-else class="text-center text-gray-700">
-      <p>No tasks found matching the search criteria.</p>
-    </div>
+    <transition name="bounceIn">
+      <div v-if="showDeleteModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg animate__animated animate__bounceIn">
+          <h3 class="text-lg font-bold mb-4">Delete Done Task</h3>
+          <p class="text-gray-800 mb-4">Are you sure you want to delete this done task?</p>
+          <div class="text-center">
+            <button @click="deleteDoneTask(currentDoneTaskID)" class="border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Confirm</button>
+            <button @click="showDeleteModal = false" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </transition>
+    <transition name="pop">
+      <div v-if="showImageModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50" @click.self="showImageModal = false">
+        <img :src="`${backendUrl}/images/${currentImage}`" alt="Expanded Task Photo" class="max-w-full max-h-full p-4 animate__animated animate__zoomIn">
+        <button @click="showImageModal = false" class="absolute top-0 right-0 m-4 text-white text-3xl">&times;</button>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -73,39 +88,105 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      searchQuery: this.$route.query.q || '',
       doneTasks: [],
       filteredDoneTasks: [],
+      showDeleteModal: false,
+      showImageModal: false,
+      currentDoneTaskID: null,
+      currentImage: '',
       backendUrl: localStorage.getItem('backendUrl') || 'http://localhost:3000',
+      searchRoom: this.$route.query.q || '',
     };
   },
+  created() {
+    this.fetchDoneTasks();
+  },
   watch: {
-    searchQuery(newQuery, oldQuery) {
-      if (newQuery !== oldQuery) {
-        this.filterTasks();
+    searchRoom(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.filterTasksByRoom();
       }
     }
   },
   methods: {
-    fetchDoneTasks() {
-      axios.get(`${this.backendUrl}/donetasks`)
-        .then(response => {
-          this.doneTasks = response.data;
-          this.filterTasks();
-        })
-        .catch(error => {
-          console.error('Error fetching done tasks:', error);
-        });
+    async fetchDoneTasks() {
+      try {
+        const response = await axios.get(`${this.backendUrl}/donetasks`);
+        const tasksWithDetails = await Promise.all(response.data.map(async task => {
+          const taskName = await this.fetchTaskName(task.taskID,task.equipmentID);
+          const username = await this.fetchUserName(task.userID);
+          const roomName = await this.fetchRoomName(task.roomID) || 'Unknown Room';
+          return { ...task, taskName, username, roomName };
+        }));
+        this.doneTasks = tasksWithDetails;
+        this.filterTasksByRoom();
+        console.log('Fetched Done Tasks:', this.doneTasks); // Log fetched tasks for debugging
+      } catch (error) {
+        console.error('Error fetching done tasks:', error);
+      }
     },
-    filterTasks() {
-      this.filteredDoneTasks = this.doneTasks.filter(task =>
-        task.username.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        task.roomName.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    }
+    filterTasksByRoom() {
+      this.filteredDoneTasks = this.doneTasks.filter(task => task.roomName === this.searchRoom);
+    },
+    async fetchTaskName(taskID, equipmentID) {
+      try {
+        let response;
+        if (taskID) {
+          response = await axios.get(`${this.backendUrl}/tasks/${taskID}`);
+          console.log('Task Name Response:', response.data); // Log the response data
+          return response.data.taskTitle;
+        } else if (equipmentID) {
+          response = await axios.get(`${this.backendUrl}/equipments/${equipmentID}`);
+          console.log('Equipment Name Response:', response.data); // Log the response data
+          return response.data.equipmentName;
+        }
+        return 'No Task or Equipment ID provided';
+      } catch (error) {
+        console.error('Error fetching task or equipment name:', error);
+        return 'Name Unavailable';
+      }
+    },
+    async fetchUserName(userID) {
+      try {
+        const response = await axios.get(`${this.backendUrl}/users/${userID}`);
+        return response.data.username || 'Unknown User';
+      } catch (error) {
+        console.error('Error fetching user name:', error);
+        return 'Unknown User';
+      }
+    },
+    async fetchRoomName(roomID) {
+      try {
+        const response = await axios.get(`${this.backendUrl}/rooms/${roomID}`);
+        console.log('Room Name Response:', response.data); // Log the response data
+        return response.data.roomName || 'Unknown Room';
+      } catch (error) {
+        console.error('Error fetching room name:', error);
+        return 'Unknown Room';
+      }
+    },
+    async deleteDoneTask(doneTaskID) {
+      try {
+        await axios.delete(`${this.backendUrl}/donetasks/${doneTaskID}`);
+        this.doneTasks = this.doneTasks.filter(item => item.doneTaskID !== doneTaskID);
+        this.filteredDoneTasks = this.filteredDoneTasks.filter(item => item.doneTaskID !== doneTaskID);
+        this.showDeleteModal = false;
+      } catch (error) {
+        console.error('Error deleting done task:', error);
+      }
+    },
+    showDeleteConfirmation(doneTaskID) {
+      this.currentDoneTaskID = doneTaskID;
+      this.showDeleteModal = true;
+    },
+    showImage(photo) {
+      this.currentImage = photo;
+      this.showImageModal = true;
+    },
+    formatDateTime(dateTime) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      return new Date(dateTime).toLocaleDateString(undefined, options);
+    },
   },
-  created() {
-    this.fetchDoneTasks();
-  }
 };
 </script>

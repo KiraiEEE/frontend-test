@@ -1,9 +1,9 @@
 <template>
   <div class="done-tasks-manager bg-white p-6 rounded-lg shadow-lg">
-    <div class="text-center">
+    <div class="text-center mb-4">
       <label for="selectedDate" class="font-bold mr-2">Day:</label>
       <input type="date" id="selectedDate" v-model="selectedDate" class="border border-gray-300 p-2 rounded-lg">
-    </div><br>
+    </div>
     <div v-if="filteredDoneTasks.length > 0" class="done-task-container">
       <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
         <thead>
@@ -65,6 +65,26 @@
         </tbody>
       </table>
     </div>
+    <div v-else class="text-center mt-4 text-gray-600">
+      No done tasks for the selected date.
+    </div>
+    <div class="pagination mt-4 flex justify-center items-center">
+      <button
+        @click="changePage(currentPage - 1)"
+        :disabled="currentPage === 1"
+        class="px-4 py-2 mx-1 bg-blue-500 text-white rounded-md disabled:opacity-50"
+      >
+        Previous
+      </button>
+      <span class="mx-2">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button
+        @click="changePage(currentPage + 1)"
+        :disabled="currentPage === totalPages"
+        class="px-4 py-2 mx-1 bg-blue-500 text-white rounded-md disabled:opacity-50"
+      >
+        Next
+      </button>
+    </div>
     <transition name="bounceIn">
       <div v-if="showDeleteModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg animate__animated animate__bounceIn">
@@ -99,6 +119,9 @@ export default {
       currentImage: '',
       backendUrl: localStorage.getItem('backendUrl') || 'http://localhost:3000',
       selectedDate: new Date().toISOString().substr(0, 10), // Default to today's date
+      currentPage: 1,
+      totalPages: 1,
+      limit: 10,
     };
   },
   computed: {
@@ -112,15 +135,21 @@ export default {
   methods: {
     async fetchDoneTasks() {
       try {
-        const response = await axios.get(`${this.backendUrl}/donetasks`);
-        const tasksWithDetails = await Promise.all(response.data.map(async task => {
-          const taskName = await this.fetchTaskName(task.taskID,task.equipmentID);
+        const response = await axios.get(`${this.backendUrl}/donetasks/paginated`, {
+          params: {
+            page: this.currentPage,
+            limit: this.limit
+          }
+        });
+        const tasksWithDetails = await Promise.all(response.data.doneTasks.map(async task => {
+          const taskName = await this.fetchTaskName(task.taskID, task.equipmentID);
           const username = await this.fetchUserName(task.userID);
           const roomName = await this.fetchRoomName(task.roomID) || 'Unknown Room';
           return { ...task, taskName, username, roomName };
         }));
         this.doneTasks = tasksWithDetails;
-        console.log('Fetched Done Tasks:', this.doneTasks); // Log fetched tasks for debugging
+        this.totalPages = response.data.totalPages;
+        console.log('Fetched Done Tasks:', this.doneTasks);
       } catch (error) {
         console.error('Error fetching done tasks:', error);
       }
@@ -130,11 +159,11 @@ export default {
         let response;
         if (taskID) {
           response = await axios.get(`${this.backendUrl}/tasks/${taskID}`);
-          console.log('Task Name Response:', response.data); // Log the response data
+          console.log('Task Name Response:', response.data);
           return response.data.taskTitle;
         } else if (equipmentID) {
           response = await axios.get(`${this.backendUrl}/equipments/${equipmentID}`);
-          console.log('Equipment Name Response:', response.data); // Log the response data
+          console.log('Equipment Name Response:', response.data);
           return response.data.equipmentName;
         }
         return 'No Task or Equipment ID provided';
@@ -155,7 +184,7 @@ export default {
     async fetchRoomName(roomID) {
       try {
         const response = await axios.get(`${this.backendUrl}/rooms/${roomID}`);
-        console.log('Room Name Response:', response.data); // Log the response data
+        console.log('Room Name Response:', response.data);
         return response.data.roomName || 'Unknown Room';
       } catch (error) {
         console.error('Error fetching room name:', error);
@@ -185,7 +214,19 @@ export default {
     },
     formatDate(date) {
       return new Date(date).toISOString().substr(0, 10);
+    },
+    changePage(newPage) {
+      if (newPage >= 1 && newPage <= this.totalPages) {
+        this.currentPage = newPage;
+        this.fetchDoneTasks();
+      }
     }
   },
+  watch: {
+    selectedDate() {
+      this.currentPage = 1;
+      this.fetchDoneTasks();
+    }
+  }
 };
 </script>

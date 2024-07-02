@@ -42,22 +42,44 @@
               :key="branch.branchID"
               class="bg-white border-b border-gray-200 hover:bg-gray-100 transition-colors duration-150"
             >
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"><i class="fas fa-building mr-2"></i>{{ branch.branchName }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                <i class="fas fa-building mr-2"></i>
+                <span v-if="editingBranchId !== branch.branchID">{{ branch.branchName }}</span>
+                <input
+                  v-else
+                  v-model="editingBranchName"
+                  class="input-field form-input px-2 py-1 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                />
+              </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-right">
-                <button
-                  @click="editBranch(branch)"
-                  :disabled="!branch.branchName"
-                  class="edit-btn border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
-                  :class="{'opacity-50': !branch.branchName}"
-                >
-                  <i class="fas fa-edit"></i> Edit
-                </button>
-                <button
-                  @click="showDeleteConfirmation(branch.branchID)"
-                  class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
-                >
-                  <i class="fas fa-trash-alt"></i> Delete
-                </button>
+                <template v-if="editingBranchId !== branch.branchID">
+                  <button
+                    @click="startEditing(branch)"
+                    class="edit-btn border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
+                  >
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                  <button
+                    @click="showDeleteConfirmation(branch.branchID)"
+                    class="delete-btn ml-2 border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
+                  >
+                    <i class="fas fa-trash-alt"></i> Delete
+                  </button>
+                </template>
+                <template v-else>
+                  <button
+                    @click="saveEdit"
+                    class="save-btn border border-green-500 text-green-500 font-bold py-2 px-4 rounded-full hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
+                  >
+                    <i class="fas fa-save"></i> Save
+                  </button>
+                  <button
+                    @click="cancelEdit"
+                    class="cancel-btn ml-2 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out"
+                  >
+                    <i class="fas fa-times"></i> Cancel
+                  </button>
+                </template>
               </td>
             </tr>
           </tbody>
@@ -68,6 +90,20 @@
   <div v-else>
     <h1 class="text-center text-xl font-bold mt-10">Access Denied</h1>
   </div>
+
+  <!-- Delete Confirmation Modal -->
+  <transition name="bounceIn">
+    <div v-if="showDeleteModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg animate__animated animate__bounceIn">
+        <h3 class="text-lg font-bold mb-4">Delete Branch</h3>
+        <p class="text-gray-800 mb-4">Are you sure you want to delete this branch?</p>
+        <div class="text-center">
+          <button @click="confirmDelete" class="border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Confirm</button>
+          <button @click="cancelDelete" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -77,13 +113,11 @@ export default {
   data() {
     return {
       branches: [],
-      branch: {
-        branchName: '',
-      },
       newBranch: {
         branchName: '',
       },
-      isEditing: false,
+      editingBranchId: null,
+      editingBranchName: '',
       showDeleteModal: false,
       currentBranchID: null,
     };
@@ -116,38 +150,44 @@ export default {
         console.error('Error creating branch:', error);
       }
     },
-    async updateBranch() {
+    startEditing(branch) {
+      this.editingBranchId = branch.branchID;
+      this.editingBranchName = branch.branchName;
+    },
+    async saveEdit() {
       try {
         const backendUrl = localStorage.getItem('backendUrl');
-        await axios.put(`${backendUrl}/branches/${this.branch.branchID}`, this.branch);
-        const index = this.branches.findIndex(item => item.branchID === this.branch.branchID);
-        this.branches[index] = { ...this.branch };
-        this.resetBranch();
+        await axios.put(`${backendUrl}/branches/${this.editingBranchId}`, { branchName: this.editingBranchName });
+        const index = this.branches.findIndex(branch => branch.branchID === this.editingBranchId);
+        if (index !== -1) {
+          this.branches[index].branchName = this.editingBranchName;
+        }
+        this.cancelEdit();
       } catch (error) {
         console.error('Error updating branch:', error);
       }
     },
-    editBranch(branch) {
-      this.branch = { ...branch };
-      this.isEditing = true;
-    },
-    async deleteBranch(branchID) {
-      try {
-        const backendUrl = localStorage.getItem('backendUrl');
-        await axios.delete(`${backendUrl}/branches/${branchID}`);
-        this.branches = this.branches.filter(item => item.branchID !== branchID);
-        this.showDeleteModal = false;
-      } catch (error) {
-        console.error('Error deleting branch:', error);
-      }
+    cancelEdit() {
+      this.editingBranchId = null;
+      this.editingBranchName = '';
     },
     showDeleteConfirmation(branchID) {
       this.currentBranchID = branchID;
       this.showDeleteModal = true;
     },
-    resetBranch() {
-      this.branch = { branchName: '' };
-      this.isEditing = false;
+    async confirmDelete() {
+      try {
+        const backendUrl = localStorage.getItem('backendUrl');
+        await axios.delete(`${backendUrl}/branches/${this.currentBranchID}`);
+        this.branches = this.branches.filter(branch => branch.branchID !== this.currentBranchID);
+        this.cancelDelete();
+      } catch (error) {
+        console.error('Error deleting branch:', error);
+      }
+    },
+    cancelDelete() {
+      this.showDeleteModal = false;
+      this.currentBranchID = null;
     },
     resetNewBranch() {
       this.newBranch = { branchName: '' };

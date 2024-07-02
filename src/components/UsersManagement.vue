@@ -67,37 +67,39 @@
       <div v-if="showAddUserModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg animate__animated animate__bounceIn">
           <h3 class="text-lg font-bold mb-4">Add New User</h3>
-          <div class="mb-4">
-            <label for="newUsername" class="block text-gray-800 font-bold mb-2">Username</label>
-            <input v-model="newUser.username" id="newUsername" placeholder="Enter username" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="mb-4">
-            <label for="newName" class="block text-gray-800 font-bold mb-2">Name</label>
-            <input v-model="newUser.name" id="newName" placeholder="Enter name" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="mb-4">
-            <label for="newUserRole" class="block text-gray-800 font-bold mb-2">Select Role</label>
-            <select v-model="newUser.role" id="newUserRole" class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-              <option disabled value="">Please select one</option>
-              <option v-for="role in roles" :value="role" :key="role">{{ role }}</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label for="newUserEmail" class="block text-gray-800 font-bold mb-2">Email</label>
-            <input v-model="newUser.email" id="newUserEmail" placeholder="Enter email" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="mb-4">
-            <label for="newUserBranchID" class="block text-gray-800 font-bold mb-2">Branch ID</label>
-            <input v-model="newUser.branchID" id="newUserBranchID" placeholder="Enter branch ID" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="mb-4">
-            <label for="newUserPhoto" class="block text-gray-800 font-bold mb-2">Photo URL</label>
-            <input v-model="newUser.photo" id="newUserPhoto" placeholder="Enter photo URL" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="text-center">
-            <button @click="createUser" :disabled="!newUser.username || !newUser.name || !newUser.role || !newUser.email || !newUser.branchID || !newUser.photo" class="border border-violet-600 text-violet-600 font-bold py-2 px-4 rounded-full hover:bg-violet-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out" :class="{'opacity-50': !newUser.username || !newUser.name || !newUser.role || !newUser.email || !newUser.branchID || !newUser.photo}">Add User</button>
-            <button @click="showAddUserModal = false" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
-          </div>
+          <form @submit.prevent="createUser">
+            <div class="mb-4">
+              <label for="newUsername" class="block text-gray-800 font-bold mb-2">Username</label>
+              <input v-model="newUser.username" id="newUsername" placeholder="Enter username" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="mb-4">
+              <label for="newName" class="block text-gray-800 font-bold mb-2">Name</label>
+              <input v-model="newUser.name" id="newName" placeholder="Enter name" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="mb-4">
+              <label for="newUserRole" class="block text-gray-800 font-bold mb-2">Select Role</label>
+              <select v-model="newUser.role" id="newUserRole" class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+                <option disabled value="">Please select one</option>
+                <option v-for="role in roles" :value="role" :key="role">{{ role }}</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label for="newUserEmail" class="block text-gray-800 font-bold mb-2">Email</label>
+              <input v-model="newUser.email" id="newUserEmail" type="email" placeholder="Enter email" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="mb-4">
+              <label for="newUserBranchID" class="block text-gray-800 font-bold mb-2">Branch ID</label>
+              <input v-model="newUser.branchID" id="newUserBranchID" placeholder="Enter branch ID" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="mb-4">
+              <label for="newUserPhoto" class="block text-gray-800 font-bold mb-2">Photo URL</label>
+              <input v-model="newUser.photo" id="newUserPhoto" placeholder="Enter photo URL" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="border border-violet-600 text-violet-600 font-bold py-2 px-4 rounded-full hover:bg-violet-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Add User</button>
+              <button type="button" @click="showAddUserModal = false" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
+            </div>
+          </form>
         </div>
       </div>
     </transition>
@@ -106,37 +108,39 @@
       <div v-if="isEditing" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg animate__animated animate__bounceIn">
           <h3 class="text-lg font-bold mb-4">Edit User</h3>
-          <div class="mb-4">
-            <label for="editUsername" class="block text-gray-800 font-bold mb-2">Username</label>
-            <input v-model="user.username" id="editUsername" placeholder="Enter username" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="mb-4">
-            <label for="editName" class="block text-gray-800 font-bold mb-2">Name</label>
-            <input v-model="user.name" id="editName" placeholder="Enter name" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="mb-4">
-            <label for="editUserRole" class="block text-gray-800 font-bold mb-2">Select Role</label>
-            <select v-model="user.role" id="editUserRole" class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-              <option disabled value="">Please select one</option>
-              <option v-for="role in roles" :value="role" :key="role">{{ role }}</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label for="editUserEmail" class="block text-gray-800 font-bold mb-2">Email</label>
-            <input v-model="user.email" id="editUserEmail" placeholder="Enter email" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="mb-4">
-            <label for="editUserBranchID" class="block text-gray-800 font-bold mb-2">Branch ID</label>
-            <input v-model="user.branchID" id="editUserBranchID" placeholder="Enter branch ID" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="mb-4">
-            <label for="editUserPhoto" class="block text-gray-800 font-bold mb-2">Photo URL</label>
-            <input v-model="user.photo" id="editUserPhoto" placeholder="Enter photo URL" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
-          </div>
-          <div class="text-center">
-            <button @click="updateUser" :disabled="!user.username || !user.name || !user.role || !user.email || !user.branchID || !user.photo" class="border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out" :class="{'opacity-50': !user.username || !user.name || !user.role || !user.email || !user.branchID || !user.photo}">Save Changes</button>
-            <button @click="isEditing = false" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
-          </div>
+          <form @submit.prevent="updateUser">
+            <div class="mb-4">
+              <label for="editUsername" class="block text-gray-800 font-bold mb-2">Username</label>
+              <input v-model="user.username" id="editUsername" placeholder="Enter username" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="mb-4">
+              <label for="editName" class="block text-gray-800 font-bold mb-2">Name</label>
+              <input v-model="user.name" id="editName" placeholder="Enter name" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="mb-4">
+              <label for="editUserRole" class="block text-gray-800 font-bold mb-2">Select Role</label>
+              <select v-model="user.role" id="editUserRole" class="block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+                <option disabled value="">Please select one</option>
+                <option v-for="role in roles" :value="role" :key="role">{{ role }}</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label for="editUserEmail" class="block text-gray-800 font-bold mb-2">Email</label>
+              <input v-model="user.email" id="editUserEmail" type="email" placeholder="Enter email" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="mb-4">
+              <label for="editUserBranchID" class="block text-gray-800 font-bold mb-2">Branch ID</label>
+              <input v-model="user.branchID" id="editUserBranchID" placeholder="Enter branch ID" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="mb-4">
+              <label for="editUserPhoto" class="block text-gray-800 font-bold mb-2">Photo URL</label>
+              <input v-model="user.photo" id="editUserPhoto" placeholder="Enter photo URL" class="input-field form-input block w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" required>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Save Changes</button>
+              <button type="button" @click="isEditing = false" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
+            </div>
+          </form>
         </div>
       </div>
     </transition>
@@ -147,7 +151,7 @@
           <h3 class="text-lg font-bold mb-4">Delete User</h3>
           <p class="text-gray-800 mb-4">Are you sure you want to delete this user?</p>
           <div class="text-center">
-            <button @click="deleteUser(currentUserID)" class="border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Confirm</button>
+            <button @click="confirmDeleteUser" class="border border-red-600 text-red-600 font-bold py-2 px-4 rounded-full hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Confirm</button>
             <button @click="showDeleteModal = false" class="ml-4 border border-gray-500 text-gray-500 font-bold py-2 px-4 rounded-full hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Cancel</button>
           </div>
         </div>

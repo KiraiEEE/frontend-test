@@ -1,5 +1,6 @@
 <template>
   <div class="p-8 bg-white rounded-lg shadow-lg">
+    <AboutApp class="mb-8" />
 
     <div class="mb-8 flex items-center justify-center space-x-3">
         <div class="p-2 bg-gray-200 rounded-full">
@@ -52,15 +53,17 @@
 
     <MainHomeTable />
   </div>
-
 </template>
+
 <script>
 import axios from 'axios';
 import MainHomeTable from './MainHomeTable.vue';
+import AboutApp from './AboutApp.vue';
 
 export default {
   components: {
-    MainHomeTable
+    MainHomeTable,
+    AboutApp
   },
   data() {
     return {

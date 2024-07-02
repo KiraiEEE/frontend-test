@@ -6,7 +6,7 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
-  <nav class="navbar flex justify-between items-center h-20 px-8 border border-gray-300" @click.self="closeMenus">
+  <nav class="navbar flex justify-between items-center h-20 px-8 border border-gray-300 sticky top-0 bg-white z-50" @click.self="closeMenus">
     <div class="flex items-center">
       <button @click="toggleSidebar" class="mr-4">
         <i class="fas fa-bars text-gray-600 text-lg"></i>
